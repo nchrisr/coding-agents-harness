@@ -14,16 +14,18 @@ root=$(git rev-parse --show-toplevel) || exit 1
 cd "$root" || exit 1
 
 changed=$( { git diff --name-only "$base"; git ls-files --others --exclude-standard; } | sort -u)
-added=$( { git diff "$base" | grep -E '^\+[^+]'; \
-  git ls-files --others --exclude-standard -z | xargs -0 cat 2>/dev/null; } )
+# Tripwires look at code, not prose: Markdown is left out, so the cards don't trip themselves.
+added=$( { git diff "$base" -- . ':(exclude)*.md' | grep -E '^\+[^+]'; \
+  git ls-files --others --exclude-standard -z -- . ':(exclude)*.md' | xargs -0 cat 2>/dev/null; } )
 
-# Reads one list from a card's frontmatter: the lines "  - ..." under "<key>:".
+# Reads one list from a card's frontmatter: the lines "  - ..." under "<key>:". Write each item in
+# single quotes, so a regex's backslashes are taken literally.
 read_list() {
   awk -v key="$1:" '
     NR == 1 && $0 == "---" { inside = 1; next }
     inside && $0 == "---" { exit }
     inside && $0 == key { grab = 1; next }
-    inside && grab && /^  - / { sub(/^  - /, ""); gsub(/^"|"$/, ""); print; next }
+    inside && grab && /^  - / { sub(/^  - /, ""); gsub(/^[\047"]|[\047"]$/, ""); print; next }
     inside && grab { grab = 0 }
   ' "$2"
 }

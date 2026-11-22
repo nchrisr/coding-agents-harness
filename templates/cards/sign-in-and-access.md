@@ -3,11 +3,11 @@ name: sign-in-and-access
 title: Sign-in and access
 involvement: teach-me
 owns:
-  - "<auth routes, session middleware, permission helpers, role checks>"
+  - '<auth routes, session middleware, permission helpers, role checks>'
 watch:
-  - "service_role|secret.?key|admin.?client"
-  - "SECURITY DEFINER"
-  - "role ?=== ?'admin'|isAdmin"
+  - 'service_role|secret.?key|admin.?client'
+  - 'SECURITY DEFINER'
+  - 'role ?=== ?''admin''|isAdmin'
 ---
 
 # Sign-in and access

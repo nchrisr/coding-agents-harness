@@ -1,10 +1,18 @@
-# Agent harness
+# Coding agents harness
 
 A reusable way of working with coding agents. It is a recipe book, not a library: nothing here runs
 inside a project, and no project depends on it. An agent reads it, then writes a project's own
 harness files, and you review them.
 
-Languages covered: Python, Rust, TypeScript and JavaScript.
+## Currently supported
+
+Keep this list up to date with every change to `packs/` or `rules/`.
+
+| | Supported | Default opinion |
+|---|---|---|
+| **Languages** | Python · TypeScript / JavaScript · Rust | Google's style guide for each, plus the overrides in `rules/style.md` (plain code over clever syntax; unknown is explicit) |
+| **Platforms** | GitHub · GitLab · Azure Repos | Harness files need the owner's approval to merge |
+| **Project types** | Product · Learning | Product: the agent builds. Learning: the owner builds the parts they want to learn |
 
 ## What's here
 

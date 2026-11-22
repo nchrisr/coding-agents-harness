@@ -3,9 +3,9 @@ name: money-and-numbers
 title: Money and numbers
 involvement: teach-me
 owns:
-  - "<valuation, pricing, totals, formatting of amounts>"
+  - '<valuation, pricing, totals, formatting of amounts>'
 watch:
-  - "avg_cost|price|amount|total|balance"
+  - 'avg_cost|price|amount|total|balance'
 ---
 
 # Money and numbers

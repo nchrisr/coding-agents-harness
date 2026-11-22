@@ -6,10 +6,10 @@ title: <Plain name>
 involvement: teach-me
 # Files this system owns. Glob patterns, matched against changed paths (* also matches /).
 owns:
-  - "<path/or/glob>"
+  - '<path/or/glob>'
 # Tripwires: patterns in a change's ADDED lines that pull it up to teach-me, wherever they appear.
 watch:
-  - "<regex>"
+  - '<regex>'
 ---
 
 # <Plain name>

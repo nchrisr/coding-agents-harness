@@ -3,10 +3,10 @@ name: performance
 title: Performance
 involvement: keep-me-posted
 owns:
-  - "<data loading, list pages, jobs>"
+  - '<data loading, list pages, jobs>'
 watch:
-  - "for .* await"
-  - "\.map\(async"
+  - 'for .* await'
+  - '\.map\(async'
 ---
 
 # Performance

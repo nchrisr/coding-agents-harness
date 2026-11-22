@@ -3,11 +3,11 @@ name: state-and-timing
 title: State and timing
 involvement: keep-me-posted
 owns:
-  - "<every file with a user action, e.g. **/actions.ts, **/handlers/*>"
-  - "<background jobs, queues, cron routes, sync code>"
+  - '<every file with a user action, e.g. **/actions.ts, **/handlers/*>'
+  - '<background jobs, queues, cron routes, sync code>'
 watch:
-  - "setTimeout|setInterval"
-  - "lock|mutex|semaphore|advisory"
+  - 'setTimeout|setInterval'
+  - 'lock|mutex|semaphore|advisory'
 ---
 
 # State and timing

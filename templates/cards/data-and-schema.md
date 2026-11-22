@@ -3,11 +3,11 @@ name: data-and-schema
 title: Data and schema
 involvement: teach-me
 owns:
-  - "<migrations folder>"
+  - '<migrations folder>'
 watch:
-  - "DROP "
-  - "ALTER TABLE"
-  - "DELETE FROM"
+  - 'DROP '
+  - 'ALTER TABLE'
+  - 'DELETE FROM'
 ---
 
 # Data and schema

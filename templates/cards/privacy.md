@@ -3,11 +3,11 @@ name: privacy
 title: Privacy
 involvement: teach-me
 owns:
-  - "<profile, email, notification, logging code>"
+  - '<profile, email, notification, logging code>'
 watch:
-  - "email"
-  - "phone"
-  - "address|console\.log|logger"
+  - 'email'
+  - 'phone'
+  - 'address|console\.log|logger'
 ---
 
 # Privacy

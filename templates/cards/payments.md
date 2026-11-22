@@ -3,11 +3,11 @@ name: payments
 title: Payments
 involvement: teach-me
 owns:
-  - "<billing, checkout, webhook code>"
+  - '<billing, checkout, webhook code>'
 watch:
-  - "charge"
-  - "refund"
-  - "webhook|price_id|amount"
+  - 'charge'
+  - 'refund'
+  - 'webhook|price_id|amount'
 ---
 
 # Payments
