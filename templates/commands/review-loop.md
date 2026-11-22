@@ -3,7 +3,8 @@ description: Review a finished tier 2 or 3 change with a general reviewer, one s
 argument-hint: <spec path, if not obvious from the branch>
 ---
 
-Run the review loop for the change on the current branch. Spec: $ARGUMENTS
+Run the review loop for the change on the current branch (a feature branch, or `main` in a project
+that commits straight to it; a dry run uses a throwaway branch). Spec: $ARGUMENTS
 
 Tier 2 and 3 only. Tier 1 changes skip this. Run it after the change is built and its checks pass, and
 before the demo, the commit of the fix-ups and the PR.
@@ -24,6 +25,9 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
    unchanged for step 6; pass it to that card's system reviewer too.
 
    Merge every numbered finding into one list, renumbered, each keeping its wording and `[card]` tag.
+   Add, as findings too, any problem a system reviewer noted outside its own card, tagged
+   `[noticed by <card>]`, word for word. Where several findings describe the same problem in the same
+   place, keep one, with every reviewer's tag, and note how many reviewers raised it; count it once.
    Keep the system reviewers' briefings aside for step 6. If there are no findings, skip to step 6.
 
 3. **Fix.** First stage the author's work with `git add -A`, so that whatever changes after this point

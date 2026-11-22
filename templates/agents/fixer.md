@@ -25,9 +25,14 @@ each finding's `[card]` tag, if any.
      sentences, pointing at the file and line that shows it.
    - **Flagged:** it's the owner's call. Change nothing. Flag it when it:
      - contradicts a decision in the spec
-     - touches anything in the tier 3 list in `AGENTS.md`, or a system card set to teach-me
+     - needs a judgement call on anything in the tier 3 list in `AGENTS.md` or a teach-me card (what
+       should happen there isn't settled by the spec or the card's invariants)
      - needs a migration
      - can be neither confirmed nor ruled out
+
+     A bug on a teach-me card that breaks one of the card's invariants, and that you've proven with a
+     failing test, is **fixed**, not flagged: the invariant already says what's right. Mark it
+     `[teach-me]` in your report so the owner's briefing covers it.
      
      Write the question the owner has to answer, in plain language, with what happens either way.
 

@@ -2,6 +2,16 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.3.0 — 2026-11-22
+From the first review-loop dry run on a new project:
+- The fixer fixes a proven bug that breaks a teach-me card's invariant (marked `[teach-me]` for the
+  briefing), and flags only judgement calls there.
+- The review loop also collects problems a system reviewer noticed outside its own card, and merges
+  duplicate findings, counting each problem once.
+- Reviewers may run the project's check command.
+- `systems-touched.sh` lists every owned file that woke a card, not just the first.
+- `review-loop` says the change may be on a feature branch, on `main`, or on a dry run's throwaway branch.
+
 ## 0.2.9 — 2026-11-22
 - Setup's decision message fits on one screen; the inspection details go in a file. A working rule
   says the same for anything the owner must read to decide.
