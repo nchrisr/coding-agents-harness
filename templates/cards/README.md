@@ -8,6 +8,7 @@ only repeats generic advice isn't earning its place.
 |---|---|---|
 | `sign-in-and-access` | Teach me | someone does or sees what they shouldn't |
 | `state-and-timing` | Keep me posted | two things at once leave a bad state |
+| `dependencies` | Teach me, every project with packages | a vulnerable, look-alike or hijacked package |
 | `harness-files` | Teach me, always | a rule or hook changes what every agent, or the machine, does |
 | `money-and-numbers` | Teach me | a wrong, missing or leaked figure |
 | `data-and-schema` | Teach me | lost data; code and schema disagree during a deploy |

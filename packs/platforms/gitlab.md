@@ -10,3 +10,8 @@
 2. **Settings → Repository → Protected branches:** protect `main` (and `develop`), allow merge only
    through merge requests, and turn on **Code owner approval**.
 3. **Check it worked:** a merge request editing `AGENTS.md` shows the owner as a required approver.
+
+## Watching dependencies weekly
+GitLab's own dependency scanning needs the Ultimate tier. Otherwise, a scheduled pipeline (CI/CD →
+Schedules, weekly) runs `osv-scanner scan source --recursive .` and fails when it finds a vulnerability,
+so you get the failure email.

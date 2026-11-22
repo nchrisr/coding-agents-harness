@@ -25,3 +25,9 @@ change.
    button should say a code owner's review is required.
 
 **Narrow keys:** the `gh` tool signs in with a fine-grained token limited to one repository.
+
+## Watching dependencies weekly (free, also on private repositories)
+**Settings → Code security** (or "Security & analysis") → turn on **Dependabot alerts** and
+**Dependabot security updates**. GitHub then emails you when a dependency turns vulnerable and opens a
+pull request that upgrades it. Those pull requests go through review like any other change; the
+dependencies card wakes for them.

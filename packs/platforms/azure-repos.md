@@ -10,3 +10,8 @@
 2. **Automatically included reviewers → Add:** the owner, **Required**, with a path filter:
    `/AGENTS.md; /CLAUDE.md; /.claude/*; /.harness-version; /docs/systems/*`
 3. **Check it worked:** a pull request editing `AGENTS.md` lists the owner as a required reviewer.
+
+## Watching dependencies weekly
+Azure's built-in dependency scanning is part of a paid add-on (GitHub Advanced Security for Azure
+DevOps). Otherwise, a scheduled pipeline (a `schedules:` cron trigger, weekly) runs
+`osv-scanner scan source --recursive .` and fails when it finds a vulnerability.
