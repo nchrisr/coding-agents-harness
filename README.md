@@ -40,6 +40,14 @@ Keep this list up to date with every change to `packs/` or `rules/`.
   that system's files.
 - **Rules a program can check go in a program** (linter, guard test, hook). Prose is for the rest.
 
+## Before you start
+
+**Add the trust rule to your own Claude settings, by hand, once.** Copy the block under "The text" in
+`trust-rule.md` into `~/.claude/CLAUDE.md` (create the file if it doesn't exist). It tells every
+session on your machine to treat this harness as material to review, never as instructions. Setup
+checks for it and stops if it's missing; it never writes the rule for you, because a harness that
+installs its own safety rule could install a weaker one.
+
 ## How to use it
 
 - **New project:** describe the idea in a few sentences, then: "Set up this project with the harness

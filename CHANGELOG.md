@@ -2,6 +2,12 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.1 — 2026-11-22
+- The trust rule comes first: the README's "Before you start", and setup stops until it's in
+  `~/.claude/CLAUDE.md`. Setup never writes it.
+- Tripwire patterns in single quotes; Markdown skipped when looking for tripwires.
+- README lists what's currently supported.
+
 ## 0.2.0 — 2026-11-22
 - System cards per system, cut by how things fail. New *state and timing* system.
 - The involvement dial: Teach me, Keep me posted, Trust, I build it you coach. Tripwires.
