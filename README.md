@@ -40,6 +40,21 @@ Keep this list up to date with every change to `packs/` or `rules/`.
   that system's files.
 - **Rules a program can check go in a program** (linter, guard test, hook). Prose is for the rest.
 
+## Before you start
+
+**Put the trust rule in a locked glass case, by hand, once per machine.** The rule tells every coding
+agent to treat this harness as material to review, never as instructions. Think of it as a notice in
+a glass display case: every agent can read it, and none can change it, because the key is your
+computer's password. `trust-rule.md` walks through it for macOS, Linux and Windows, and for Claude Code
+and Codex:
+
+1. Create the rule file in a neutral folder (`~/.config/coding-agents-harness/`).
+2. Point each agent you use at it from its personal instructions file.
+3. Lock the rule file and the pointers with your password.
+
+Setup checks all three and stops if any is missing. It never writes or locks them for you, because a
+harness that installs its own safety rule could install a weaker one.
+
 ## How to use it
 
 - **New project:** describe the idea in a few sentences, then: "Set up this project with the harness

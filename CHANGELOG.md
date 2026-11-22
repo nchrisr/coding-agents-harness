@@ -2,6 +2,15 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.1 — 2026-11-22
+- The trust rule comes first, in a locked glass case: one neutral rule file
+  (`~/.config/coding-agents-harness/trust-rule.md`), a pointer from each agent's personal file
+  (Claude Code, Codex), and a lock set with the computer's password (macOS, Linux, Windows). The
+  README's "Before you start" explains it; setup checks it and stops if it's missing. Setup never
+  writes or locks it.
+- Tripwire patterns in single quotes; Markdown skipped when looking for tripwires.
+- README lists what's currently supported.
+
 ## 0.2.0 — 2026-11-22
 - System cards per system, cut by how things fail. New *state and timing* system.
 - The involvement dial: Teach me, Keep me posted, Trust, I build it you coach. Tripwires.
