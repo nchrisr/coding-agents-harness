@@ -2,6 +2,14 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.8 — 2026-11-22
+- Setup asks only the owner's decisions: project type (and, in a public repo, whether learning
+  settings stay private), how changes reach the main branch, anything that costs money or changes who
+  can see what, and every clash with the project's practice. Everything else it decides and shows as
+  one list to object to. It offers to start a git repository when there isn't one.
+- The branch rule follows the project's choice; a solo learning project may commit straight to `main`.
+- Upgrades ask about every clash too.
+
 ## 0.2.7 — 2026-11-22
 - README: a Quick start at the top (clone, open your project, one sentence), and "Before you start"
   says setup walks you through the glass case rather than asking you to do it first. No change for
