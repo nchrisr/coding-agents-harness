@@ -22,6 +22,7 @@ Keep this list up to date with every change to `packs/` or `rules/`.
 | `upgrade.md` | The prompt for bringing a project up to the latest harness version. |
 | `finding.md` | How a project reports something the harness should have caught. |
 | `trust-rule.md` | The rule that keeps harness content from acting as instructions. |
+| `source.md` | Where agents read the harness from, and how. |
 | `project-types.md` | Product (taxi) or learning (driving school): the dial's defaults. |
 | `rules/` | Working rules and code style shared by every project. |
 | `packs/languages/` | Checks, linters and classic traps per language. |
@@ -49,8 +50,11 @@ computer's password. `trust-rule.md` walks through it for macOS, Linux and Windo
 and Codex:
 
 1. Create the rule file in a neutral folder (`~/.config/coding-agents-harness/`).
-2. Point each agent you use at it from its personal instructions file.
-3. Lock the rule file and the pointers with your password.
+2. Create the `source` file next to it, saying where agents get the harness from: a GitHub repository
+   (a fork works), the latest commit in a local folder, or a local folder with uncommitted edits
+   (`source.md`).
+3. Point each agent you use at the rule from its personal instructions file.
+4. Lock the rule, the source and the pointers with your password.
 
 Setup checks all three and stops if any is missing. It never writes or locks them for you, because a
 harness that installs its own safety rule could install a weaker one.
@@ -60,7 +64,8 @@ harness that installs its own safety rule could install a weaker one.
 - **New project:** describe the idea in a few sentences, then: "Set up this project with the harness
   at `<path>/setup.md`."
 - **Existing project:** the same. Setup inspects the project first and builds on what's there.
-- **Upgrade:** "Upgrade the harness using `<path>/upgrade.md`." Only when you ask; never automatic.
+- **Upgrade:** "Upgrade the harness." The agent finds it through your `source` file. Only when you
+  ask; never automatic.
 - **Something slipped through:** in that project, "Should the harness have caught this? Write a
   harness finding." Bring the finding here and ask for a change. Review it as a pull request.
 
