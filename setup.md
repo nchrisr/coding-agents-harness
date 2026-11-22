@@ -70,7 +70,8 @@ that says nothing specific to this project should be cut or rewritten.
 - **`docs/systems/`:** one card per system from `<harness>/templates/system-card.md` and
   `<harness>/templates/cards/`, plus a `README.md` listing them. "How it breaks" holds this project's
   real incidents; if there are none yet, say so rather than inventing some.
-- **`scripts/systems-touched.sh`** from the template, with this project's base branch as the default.
+- **`scripts/systems-touched.sh`** and **`scripts/hooks-diff.sh`** from the templates, with this
+  project's base branch as the default.
 - **`.claude/agents/`:** `reviewer`, `spec-critic`, `fixer`, `system-reviewer` from the templates.
 - **`.claude/commands/`:** `spec`, `review-loop` from the templates.
 - **`.claude/hooks/check-on-stop.sh`** from the template, with the language packs' fast checks.
@@ -107,7 +108,8 @@ Don't just say it's done. Check and report each, including what you couldn't che
    **every** `watch` pattern with two added lines: one that creates the risky thing (must trip) and one
    that only mentions it, such as a message or a comparison (must not trip). Tighten any pattern that
    trips on the mention.
-3. Confirm CI, the formatter and the linter pass with the new files.
+3. Run `scripts/hooks-diff.sh` on a sample change that adds one hook command; confirm the command
+   appears word for word. Confirm CI, the formatter and the linter pass with the new files.
 4. Dry-run `/review-loop` on a throwaway branch: a tiny spec and a small change with one real bug from a
    card's invariants and one decoy that looks wrong but is what the spec asks for. The right system
    reviewer should find the bug and leave the decoy; the fixer should prove it with a failing test and

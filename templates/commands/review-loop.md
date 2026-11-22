@@ -20,6 +20,9 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
    - one `system-reviewer` subagent per touched card set to `teach-me` or `keep-me-posted`, with only:
      the branch and base, the spec path, the card path, its setting, and why it woke.
 
+   If `harness-files` is touched, also run `scripts/hooks-diff.sh <base>` yourself and keep its output
+   unchanged for step 6; pass it to that card's system reviewer too.
+
    Merge every numbered finding into one list, renumbered, each keeping its wording and `[card]` tag.
    Keep the system reviewers' briefings aside for step 6. If there are no findings, skip to step 6.
 
@@ -37,7 +40,7 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
 
 6. **Tell the owner, by the dial,** in plain language:
    - **Teach me** cards: each system reviewer's briefing, one system at a time, checking it makes sense
-     before the next.
+     before the next. For `harness-files`, show the hooks diff word for word first, before any summary.
    - the counts: findings, fixed, rejected, flagged; then each flagged item as a question, one at a
      time, with what happens either way.
    - **Keep me posted** cards: their paragraphs go in the PR summary, not in chat.
