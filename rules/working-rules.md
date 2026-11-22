@@ -19,7 +19,8 @@ Copied into a project's `AGENTS.md` at setup, adapted to its words.
 - **One task, one session, one worktree.** Only one session at a time changes the database schema.
 
 ## Changes
-- Every change on its own branch, merged through a pull request.
+- Changes reach the main branch the way the project chose at setup: branches and pull requests, or
+  straight to `main` for a solo learning project.
 - Run the same checks as CI before claiming anything is done.
 - After restarting a server, prove it restarted before asking for a retest.
 - Never run git commands that move or discard uncommitted work without saying so first.

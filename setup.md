@@ -38,26 +38,33 @@ Find out:
 
 Tell me briefly what you found, including what you couldn't determine.
 
-## Phase 2: Decide with me (one question sheet)
-Ask these together, each with your recommendation:
-1. **Project type:** product or learning (`<harness>/project-types.md`). It sets the dial's defaults.
-2. **Systems and the dial:** the list of cards you propose, each with its setting (teach-me,
-   keep-me-posted, trust, coach), its files, and its tripwires. Explain any card I'd want to push back on.
-3. **Tier 3 list:** what counts as highest risk, by what a change does. Usually the teach-me cards.
-4. **Languages:** which packs from `<harness>/packs/languages/` apply, and which of their linter
-   settings to turn on now versus later (turning on a strict lint rule in an existing project can
-   mean many fixes).
-5. **The approval lock:** which platform pack (`<harness>/packs/platforms/`), and whether the plan
-   supports it. If it costs money, say how much and let me decide.
-6. **Demos:** how a visible change can be shown to me before it's committed. Warn me if local
-   development uses real data.
-7. **Private notes:** anything to keep out of git, such as a backlog or personal preferences.
-8. **Parallel work:** do I want several sessions at once? If not, skip the worktree script.
-9. **Review record:** where the review loop's summary goes. With pull requests, one comment per PR,
-   using the host's command-line tool signed in with the narrowest key it offers (on GitHub, a
-   fine-grained token for this one repository). Walk me through creating the key; I paste it myself.
+## Phase 2: Decide with me (few questions, one list)
+Ask me only what is mine to decide. Decide everything else yourself and show it as a list I can
+object to. A long question sheet wears the owner out; most technical choices are yours.
 
-Then summarise the full plan and wait for my approval before writing any files.
+**Ask me** (one sheet, a recommendation with each, and what changes either way):
+1. **Project type:** product or learning (`project-types.md`). In a **public** repository, also ask
+   whether learning settings stay private; if so, committed cards use only teach-me, keep-me-posted
+   and trust, and the project type and coach overrides go in the private notes file.
+2. **How changes reach the main branch:** straight to `main`, or branches and pull requests. Recommend
+   straight to `main` for a solo learning project, and pull requests once anyone else commits or the
+   project ships to users.
+3. **Anything that costs money or changes who can see what:** a paid plan for the approval lock, making
+   something public, a new service.
+4. **Every clash** between a harness rule and what the project already does (naming, branching, a
+   lint rule its code would fail, a stricter rule of its own): one question each. Never resolve a
+   clash silently in the harness's favour.
+
+**Decide and list** (one "here's what I chose" list, a line each, with the reason; I object line by line):
+- the systems, their cards, settings, files and tripwires; the tier 3 list
+- the language packs and which lint rules go on now or later
+- the platform pack and its committed file
+- demos, private notes, parallel work, and where the review record goes
+
+If the project isn't in git yet, say so first, and offer to start a repository before anything else:
+the harness relies on git for diffs, branches and versions.
+
+Then wait for my answers and objections before writing any files.
 
 ## Phase 3: Build what I approved
 Adapt each template to this project: its names, commands, paths and real incidents. A template line

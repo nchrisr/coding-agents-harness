@@ -1,6 +1,8 @@
 # Project types
 
 Setup asks which one a project is. The type only sets the dial's defaults; each card can override.
+In a public repository, learning settings can stay private: the committed cards use only teach-me,
+keep-me-posted and trust, and the type and coach overrides live in the project's private notes file.
 
 | | Product (taxi) | Learning (driving school) |
 |---|---|---|
