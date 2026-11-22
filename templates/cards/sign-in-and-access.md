@@ -5,9 +5,9 @@ involvement: teach-me
 owns:
   - '<auth routes, session middleware, permission helpers, role checks>'
 watch:
-  - 'service_role|secret.?key|admin.?client'
+  - 'create\w*Admin\w*Client\w*\(|SERVICE_ROLE_KEY|SECRET_KEY\b'
   - 'SECURITY DEFINER'
-  - 'role ?=== ?''admin''|isAdmin'
+  - '\.role ?=== ?.admin.|isAdmin ?='
 ---
 
 # Sign-in and access

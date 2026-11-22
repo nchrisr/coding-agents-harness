@@ -80,8 +80,18 @@ that says nothing specific to this project should be cut or rewritten.
 - **Linter settings** I approved from the language packs.
 - **Decisions doc** (for example `docs/decisions.md`): each entry gives the decision, its date, why, and
   what was rejected. Seed it with the review loop and the systems approach.
-- **`docs/specs/README.md`:** files named `YYYY-MM-DD-short-name.md`; a spec records decisions when
-  written and isn't kept up to date, so the code wins; reasons stated in full.
+- **`docs/specs/README.md`:** the folder holds work in progress only. Files are named
+  `YYYY-MM-DD_short-name.md`: the date, one underscore, then lowercase words joined by dashes
+  (`^\d{4}-\d{2}-\d{2}_[a-z0-9]+(-[a-z0-9]+)*\.md$`). A spec records decisions when written and isn't
+  kept up to date, so the code wins; reasons stated in full. Once its change has shipped, a later
+  change copies the lasting decisions into the decisions doc, **naming the spec's file**, and deletes
+  the spec. Git history keeps it.
+- **A guard test** that fails on any file in `docs/specs/` other than `README.md` whose name doesn't
+  match the pattern.
+- **In `AGENTS.md`, how to read a deleted spec:** find the commit that deleted it with
+  `git log --diff-filter=D -1 --format=%H -- docs/specs/<name>`, then
+  `git show <that commit>^:docs/specs/<name>`. An agent looking into an old decision follows the file
+  name from the decisions doc back to the full spec.
 - **The approval lock:** the platform pack's committed file (such as `CODEOWNERS`) covering the harness
   files. The platform settings are an owner step.
 - **Parallel work** (only if wanted): `scripts/setup-worktree.sh`, safe to re-run: copies env files,
@@ -93,7 +103,10 @@ Don't just say it's done. Check and report each, including what you couldn't che
 1. Run the Stop hook with sample input on a passing change and on a deliberate failure; confirm the
    exit codes; remove the failure. Confirm `jq` is installed and the settings file is valid JSON.
 2. Run `scripts/systems-touched.sh` on a sample change touching one card's files, and on one that
-   trips another card's tripwire. Confirm both cards are listed with the right setting.
+   trips another card's tripwire. Confirm both cards are listed with the right setting. Then test
+   **every** `watch` pattern with two added lines: one that creates the risky thing (must trip) and one
+   that only mentions it, such as a message or a comparison (must not trip). Tighten any pattern that
+   trips on the mention.
 3. Confirm CI, the formatter and the linter pass with the new files.
 4. Dry-run `/review-loop` on a throwaway branch: a tiny spec and a small change with one real bug from a
    card's invariants and one decoy that looks wrong but is what the spec asks for. The right system

@@ -5,9 +5,9 @@ involvement: teach-me
 owns:
   - '<migrations folder>'
 watch:
-  - 'DROP '
-  - 'ALTER TABLE'
-  - 'DELETE FROM'
+  - 'DROP (COLUMN|TABLE|POLICY|FUNCTION)'
+  - '(CREATE|ALTER) POLICY|DISABLE ROW LEVEL SECURITY'
+  - 'DELETE FROM|TRUNCATE'
 ---
 
 # Data and schema

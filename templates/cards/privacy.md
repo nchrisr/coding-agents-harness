@@ -5,9 +5,8 @@ involvement: teach-me
 owns:
   - '<profile, email, notification, logging code>'
 watch:
-  - 'email'
-  - 'phone'
-  - 'address|console\.log|logger'
+  - '(console\.\w+|logger\.\w+|print)\(.*(email|phone|address)'
+  - 'push\w*\(.*(email|phone|address)'
 ---
 
 # Privacy

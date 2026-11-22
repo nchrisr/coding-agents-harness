@@ -74,3 +74,7 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
    ```
 
    Leave out any heading with nothing under it. Never include a security hole this change doesn't fix.
+
+9. **After it merges and ships,** the spec has done its job. In the next change in this area (or a
+   small cleanup), copy any decision that outlasts the change into the decisions doc, with the spec's
+   file name, and delete the spec. Keep the folder to work in progress.
