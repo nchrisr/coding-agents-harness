@@ -3,8 +3,11 @@
 Each upgrade reads the entries after the version a project was set up from.
 
 ## 0.2.1 — 2026-11-22
-- The trust rule comes first: the README's "Before you start", and setup stops until it's in
-  `~/.claude/CLAUDE.md`. Setup never writes it.
+- The trust rule comes first, in a locked glass case: one neutral rule file
+  (`~/.config/coding-agents-harness/trust-rule.md`), a pointer from each agent's personal file
+  (Claude Code, Codex), and a lock set with the computer's password (macOS, Linux, Windows). The
+  README's "Before you start" explains it; setup checks it and stops if it's missing. Setup never
+  writes or locks it.
 - Tripwire patterns in single quotes; Markdown skipped when looking for tripwires.
 - README lists what's currently supported.
 
