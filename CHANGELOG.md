@@ -2,6 +2,16 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.4 — 2026-11-22
+- Language packs carry their Google guide links and a short offline summary of the rules that matter
+  most; project rules and the overrides win where they differ.
+- The trust rule describes the harness instead of naming its repository, and the README says what a
+  rename touches (not the glass case).
+- Hooks: `scripts/hooks-diff.sh` shows every command that runs on its own (agent hooks and their
+  scripts, git hooks, package install scripts), before and after, word for word. The harness-files
+  card watches git hooks and install scripts too, and its reviewer answers a checklist (network,
+  outside the project, hidden, secrets, too often). The review loop and upgrades show the diff first.
+
 ## 0.2.3 — 2026-11-22
 - Tripwires match the code that creates a risky thing, not a mention of it; starter patterns
   tightened; setup tests each pattern with a must-trip and a must-not-trip line. Cards' `owns` list the

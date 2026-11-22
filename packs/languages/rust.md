@@ -4,6 +4,24 @@
 **Formatter:** `cargo fmt`. **Linter:** `cargo clippy --all-targets -- -D warnings`.
 **Tests:** `cargo test`.
 
+## Base style
+**Google Rust Style Guide:** https://google.github.io/styleguide/rustguide.html, which defers to the
+**Rust Style Guide** (https://doc.rust-lang.org/style-guide/) and the **Rust API Guidelines**
+(https://rust-lang.github.io/api-guidelines/) and adds rules on API and implementation design.
+
+The agent knows these guides from training and needs no internet to apply them; the link is for a
+person, or an agent that wants the detail. The rules below are a summary in our own words, so the
+pack works offline. **Project rules and the overrides in `rules/style.md` win** where they differ.
+
+The rules that matter most (from the guides it builds on; read the Google guide for its additions):
+- Layout is `rustfmt`'s job, with the project's `rustfmt.toml`, if any.
+- `snake_case` for functions, variables and modules; `UpperCamelCase` for types and traits;
+  `SCREAMING_SNAKE_CASE` for constants and statics.
+- Conversions follow `as_` (cheap, borrowed), `to_` (costly), `into_` (consumes self).
+- Public types implement the common traits that make sense (`Debug`, `Clone`, `PartialEq`, `Default`).
+- Errors are typed (`Result<T, E>` with a meaningful `E`); a library never panics on bad input.
+- Public items have doc comments, with an example where it helps.
+
 ## End-of-turn hook checks
 `cargo clippy --all-targets -- -D warnings` · `cargo test`. File types: `\.(rs|toml)$`.
 

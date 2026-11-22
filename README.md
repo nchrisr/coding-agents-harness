@@ -64,6 +64,14 @@ harness that installs its own safety rule could install a weaker one.
 - **Something slipped through:** in that project, "Should the harness have caught this? Write a
   harness finding." Bring the finding here and ask for a change. Review it as a pull request.
 
+## Renaming this repo
+
+Safe. GitHub forwards the old address, so existing clones keep pushing and pulling (update a remote
+with `git remote set-url origin <new url>` when convenient). The trust rule describes the harness
+rather than naming it, and `~/.config/coding-agents-harness/` keeps its name, so the glass case is
+never touched. Update only: this README's title, the repository description, and the line in each
+project's `AGENTS.md` that names the harness (the next upgrade can do that).
+
 ## Changing this repo
 
 Only through pull requests the owner reviews. Every change bumps `VERSION` and adds a line to
