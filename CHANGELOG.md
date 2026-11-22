@@ -2,6 +2,15 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.5 — 2026-11-22
+- A `source` file in the glass case says where agents read the harness from: `remote` (a repository and
+  branch, a fork works), `local-commit`, or `local-working` (unreviewed, announced loudly). `source.md`
+  explains it; setup and upgrades read the harness only through it, so "upgrade the harness" needs no path.
+  The trust rule's last-but-one bullet changes to match.
+- Upgrades protect the project's own work: they look at its branch and uncommitted files first, and work
+  in a separate worktree. A new rule that would fail on existing code is never fixed inside the upgrade;
+  the owner chooses: fix separately, new files only, or skip.
+
 ## 0.2.4 — 2026-11-22
 - Language packs carry their Google guide links and a short offline summary of the rules that matter
   most; project rules and the overrides win where they differ.
