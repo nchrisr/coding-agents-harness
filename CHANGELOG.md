@@ -2,6 +2,11 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.6 — 2026-11-22
+- When an upgrade adds a check with a known-exceptions list, it builds the list from the main
+  integration branch and every open branch (`git for-each-ref refs/remotes/origin` after a fetch),
+  not only the branch it works on, and says how many entries came from other branches.
+
 ## 0.2.5 — 2026-11-22
 - A `source` file in the glass case says where agents read the harness from: `remote` (a repository and
   branch, a fork works), `local-commit`, or `local-working` (unreviewed, announced loudly). `source.md`
