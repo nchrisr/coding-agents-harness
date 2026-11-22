@@ -9,9 +9,11 @@ stop and show me.
 **Then check the glass case** (`<harness>/trust-rule.md`): the rule file exists in
 `~/.config/coding-agents-harness/`, your own personal instructions file points to it, and both are
 locked (macOS: `ls -lO` shows `uchg`; Linux: `lsattr` shows `i`; Windows: `icacls` shows read-only for
-the user). If anything is missing, stop before anything else: explain the glass case in one or two
-sentences, point me to the steps in `trust-rule.md`, and wait. Never create, edit or lock these files
-yourself.
+the user). If anything is missing, stop before anything else and walk me through the steps in
+`trust-rule.md` **one at a time**: say what the step does and why in a sentence or two, give me the
+exact command or text for my operating system and agent, wait until I say it's done, check it with
+read-only commands, and only then go to the next step. Answer any question before moving on. Never
+create, edit or lock these files yourself, and never ask for or type my password.
 
 ## How to work with me
 Follow `<harness>/rules/working-rules.md`. In short: small chunks, plain language, one question sheet
