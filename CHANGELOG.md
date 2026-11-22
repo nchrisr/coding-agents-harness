@@ -2,6 +2,11 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.7 — 2026-11-22
+- README: a Quick start at the top (clone, open your project, one sentence), and "Before you start"
+  says setup walks you through the glass case rather than asking you to do it first. No change for
+  projects.
+
 ## 0.2.6 — 2026-11-22
 - When an upgrade adds a check with a known-exceptions list, it builds the list from the main
   integration branch and every open branch (`git for-each-ref refs/remotes/origin` after a fetch),
