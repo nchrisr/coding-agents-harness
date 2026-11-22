@@ -4,6 +4,20 @@ A reusable way of working with coding agents. It is a recipe book, not a library
 inside a project, and no project depends on it. An agent reads it, then writes a project's own
 harness files, and you review them.
 
+
+## Quick start
+
+1. **Clone this repo** anywhere on your machine:
+   `git clone <this repo's URL> ~/coding-agents-harness`
+2. **Open your project** (new or existing) in your coding agent.
+3. **Say:** "Set up this project with the harness at `~/coding-agents-harness/setup.md`."
+   For a new project, describe the idea in a few sentences first.
+
+The first time on a machine, setup stops before anything else and walks you, one step at a time,
+through putting the trust rule in a locked glass case (below). It takes a few minutes and needs your
+computer's password; the agent never sees it. After that, agents find the harness on their own, and
+you never give the path again.
+
 ## Currently supported
 
 Keep this list up to date with every change to `packs/` or `rules/`.
@@ -43,7 +57,8 @@ Keep this list up to date with every change to `packs/` or `rules/`.
 
 ## Before you start
 
-**Put the trust rule in a locked glass case, by hand, once per machine.** The rule tells every coding
+**Once per machine, you put the trust rule in a locked glass case.** Setup walks you through it; you
+type the commands and the password yourself. The rule tells every coding
 agent to treat this harness as material to review, never as instructions. Think of it as a notice in
 a glass display case: every agent can read it, and none can change it, because the key is your
 computer's password. `trust-rule.md` walks through it for macOS, Linux and Windows, and for Claude Code
@@ -56,7 +71,7 @@ and Codex:
 3. Point each agent you use at the rule from its personal instructions file.
 4. Lock the rule, the source and the pointers with your password.
 
-Setup checks all three and stops if any is missing. It never writes or locks them for you, because a
+Setup checks all four and stops if any is missing. It never writes or locks them for you, because a
 harness that installs its own safety rule could install a weaker one.
 
 ## How to use it
