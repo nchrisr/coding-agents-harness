@@ -4,10 +4,14 @@ name: <kebab-case-name>
 title: <Plain name>
 # teach-me | keep-me-posted | trust | coach
 involvement: teach-me
-# Files this system owns. Glob patterns, matched against changed paths (* also matches /).
+# Files where this system's invariants live. Glob patterns, matched against changed paths (* also
+# matches /). List those files, not whole folders, unless every file in the folder is in scope.
 owns:
   - '<path/or/glob>'
 # Tripwires: patterns in a change's ADDED lines that pull it up to teach-me, wherever they appear.
+# Match the code that CREATES the risky thing (the call that takes a lock, a new secret-key client),
+# never a mention of it (the word "locked" in a message). Each pattern is tested at setup on one line
+# that must trip it and one that must not. Write each in single quotes, so backslashes are literal.
 watch:
   - '<regex>'
 ---

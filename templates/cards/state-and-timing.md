@@ -6,8 +6,9 @@ owns:
   - '<every file with a user action, e.g. **/actions.ts, **/handlers/*>'
   - '<background jobs, queues, cron routes, sync code>'
 watch:
-  - 'setTimeout|setInterval'
-  - 'lock|mutex|semaphore|advisory'
+  - 'pg_advisory(_xact)?_lock|new (Mutex|Semaphore)\b|\.acquire\(|claim\w*Lock\('
+  - '\bset(Timeout|Interval)\('
+  - '\bnew (Worker|Queue)\('
 ---
 
 # State and timing
@@ -27,7 +28,8 @@ floors don't confuse it.
 - An action that's retried or double-clicked applies once.
 
 ## Tripwires (changes that pull you in, even from a trusted area)
-- A new lock, background job or queue, or a new action writing rows an existing one writes.
+- A new lock, timer, background job or queue (the code that creates one, not a mention), or a new
+  action writing rows an existing one writes.
 - Any "busy" outcome reported as an error.
 
 ## How it breaks

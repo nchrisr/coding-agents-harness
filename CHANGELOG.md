@@ -2,6 +2,14 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.3 — 2026-11-22
+- Tripwires match the code that creates a risky thing, not a mention of it; starter patterns
+  tightened; setup tests each pattern with a must-trip and a must-not-trip line. Cards' `owns` list the
+  files where invariants live, not whole folders.
+- Specs are work in progress: named `YYYY-MM-DD_short-name.md` (checked by a guard test), deleted once
+  shipped and their lasting decisions are in the decisions doc under the spec's file name, and read
+  back from git history when needed.
+
 ## 0.2.2 — 2026-11-22
 - New starter card `harness-files` (Teach me, every project): a change to agent instructions, cards or
   hooks always gets its own briefing. It's the protection where the repo host's approval lock isn't

@@ -7,7 +7,8 @@ Write a spec for: $ARGUMENTS
 
 Don't edit code. Use plan mode if it's available.
 
-1. **Understand it.** Read the relevant docs, settled decisions and code. Check assumptions against the
+1. **Understand it.** Read the relevant docs, settled decisions and code. A decision that names a
+   deleted spec can be read from git history (see `AGENTS.md`). Check assumptions against the
    real system, not just the files.
 2. **Pick the tier** using `AGENTS.md`, and say why. A tier 1 change doesn't need a spec: say so and stop.
 3. **Name the systems.** Which cards in `docs/systems/` does this touch, and what is each set to? A
@@ -42,7 +43,7 @@ Don't edit code. Use plan mode if it's available.
 
 5. **Tier 3 only:** run the `spec-critic` subagent. Check its findings, fix the spec for the ones that
    hold up, and report which you rejected and why.
-6. **Save it** as `docs/specs/YYYY-MM-DD-short-name.md`. If it describes an unfixed security hole, keep
+6. **Save it** as `docs/specs/YYYY-MM-DD_short-name.md`. If it describes an unfixed security hole, keep
    it in chat instead.
 7. **Stop and walk the owner through it.** Teach-me decisions one at a time; everything else as one
    question sheet with a recommendation for each. Wait for approval before writing code.

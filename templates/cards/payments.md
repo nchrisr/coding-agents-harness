@@ -5,9 +5,8 @@ involvement: teach-me
 owns:
   - '<billing, checkout, webhook code>'
 watch:
-  - 'charge'
-  - 'refund'
-  - 'webhook|price_id|amount'
+  - '(charges|paymentIntents|refunds)\.create\('
+  - 'constructEvent\(|verify\w*Webhook\('
 ---
 
 # Payments

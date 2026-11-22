@@ -5,7 +5,7 @@ involvement: teach-me
 owns:
   - '<valuation, pricing, totals, formatting of amounts>'
 watch:
-  - 'avg_cost|price|amount|total|balance'
+  - '<the function that creates a figure, e.g. calculate\w*Value\(>'
 ---
 
 # Money and numbers
