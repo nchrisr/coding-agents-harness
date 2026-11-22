@@ -2,6 +2,12 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.2.9 — 2026-11-22
+- Setup's decision message fits on one screen; the inspection details go in a file. A working rule
+  says the same for anything the owner must read to decide.
+- Setup looks for git repositories anywhere in the project, never starts one above a nested one, and
+  asks which folder should be the root (the nested one moved aside, never deleted).
+
 ## 0.2.8 — 2026-11-22
 - Setup asks only the owner's decisions: project type (and, in a public repo, whether learning
   settings stay private), how changes reach the main branch, anything that costs money or changes who
