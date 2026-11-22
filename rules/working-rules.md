@@ -4,6 +4,7 @@ Copied into a project's `AGENTS.md` at setup, adapted to its words.
 
 ## Talking to the owner
 - **Explain in small chunks,** one idea at a time, in plain language, with an analogy where one helps.
+- **One screen at most** for anything the owner must read to decide. Details go in a file they can open.
 - **One question sheet, not a drip.** Collect every question a step raises and ask them together,
   each with a recommendation, so one visit clears them.
 - **Outside *Teach me*, decide and log.** Make the call, write it down (the spec, the PR summary or the

@@ -36,7 +36,12 @@ Find out:
   For each: which files, and what has already gone wrong (git history, fix commits, docs)
 - Rules the code or history already implies, especially from past bugs
 
-Tell me briefly what you found, including what you couldn't determine.
+- **Git repositories anywhere in it:** run `find . -name .git -not -path '*/node_modules/*'`. A
+  framework's project generator often starts one in a subfolder. If there's one below the top folder,
+  say so: never start a repository above it.
+
+Write what you found, including what you couldn't determine, to a file in the scratchpad (or the
+project's `docs/` if I ask), and tell me in two or three lines.
 
 ## Phase 2: Decide with me (few questions, one list)
 Ask me only what is mine to decide. Decide everything else yourself and show it as a list I can
@@ -62,9 +67,13 @@ object to. A long question sheet wears the owner out; most technical choices are
 - demos, private notes, parallel work, and where the review record goes
 
 If the project isn't in git yet, say so first, and offer to start a repository before anything else:
-the harness relies on git for diffs, branches and versions.
+the harness relies on git for diffs, branches and versions. If a repository already exists in a
+subfolder, ask which folder should be the root. Usually it's the top folder, with the nested
+repository moved aside (never deleted) once you've checked it holds only generated history.
 
-Then wait for my answers and objections before writing any files.
+**Keep this message to one screen:** the questions first, one line each with the recommendation; then
+the choices, one line each; then one line saying which answers matter most and why. Details go in the
+findings file. Then wait for my answers and objections before writing any files.
 
 ## Phase 3: Build what I approved
 Adapt each template to this project: its names, commands, paths and real incidents. A template line
