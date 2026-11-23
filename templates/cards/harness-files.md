@@ -17,6 +17,7 @@ owns:
   - '.pre-commit-config.y*ml'
   - 'scripts/hooks-diff.sh'
   - 'scripts/doc-refs-check.py'
+  - 'scripts/blast-radius.sh'
 watch:
   - '"hooks"'
   - '"(pre|post)?install"|"prepare"|"prepublish(Only)?"|"postpack"'

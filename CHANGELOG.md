@@ -2,6 +2,12 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.5.2 — 2026-11-23
+- New `scripts/blast-radius.sh`: the top-level functions, classes and constants a change touched, and
+  every other file that imports and uses each one, as file:line (names only, no source). The review
+  loop runs it first and gives its output to the reviewer and every system reviewer, since breakage
+  usually lives outside the diff.
+
 ## 0.5.1 — 2026-11-23
 - New `evaluate.md`: how to test a tool or rule before adopting it. Same setup in every arm, the
   tool blocked in the control, proof from the transcripts that it ran, blind grading against a key

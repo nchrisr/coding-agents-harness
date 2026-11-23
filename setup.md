@@ -88,8 +88,8 @@ that says nothing specific to this project should be cut or rewritten.
 - **`docs/systems/`:** one card per system from `<harness>/templates/system-card.md` and
   `<harness>/templates/cards/`, plus a `README.md` listing them. "How it breaks" holds this project's
   real incidents; if there are none yet, say so rather than inventing some.
-- **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`** and **`scripts/deps-check.sh`** from
-  the templates, with this project's base branch as the default.
+- **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`**, **`scripts/deps-check.sh`** and
+  **`scripts/blast-radius.sh`** from the templates, with this project's base branch as the default.
 - **`scripts/doc-refs-check.py`** from the template, run by the Stop hook and in CI. It fails when
   `AGENTS.md` or `docs/` names a file that's gone, a line past a file's end, or a function no longer
   where the doc says, and when a card's `owns` path no longer exists. Write references it can follow:

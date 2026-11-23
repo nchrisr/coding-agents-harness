@@ -13,13 +13,17 @@ before the demo, the commit of the fix-ups and the PR.
 Don't explain what you built or why, don't filter the findings, and don't add your view of them.
 
 1. **Find the systems.** Run `scripts/systems-touched.sh <base>`. Each line is a card, its setting for
-   this change, and why it woke. Cards set to `trust` need no reviewer.
+   this change, and why it woke. Cards set to `trust` need no reviewer. Then run
+   `scripts/blast-radius.sh <base>`: the functions the change touched and every other file that uses
+   them. Keep its output unchanged.
 
 2. **Review, in parallel.** Start, in one message:
    - the `reviewer` subagent with only: the branch, that the change is everything since `<base>`
-     committed or not, the spec path, and that findings come back in its numbered format;
+     committed or not, the spec path, the blast-radius output, and that findings come back in its
+     numbered format;
    - one `system-reviewer` subagent per touched card set to `teach-me` or `keep-me-posted`, with only:
-     the branch and base, the spec path, the card path, its setting, and why it woke.
+     the branch and base, the spec path, the card path, its setting, why it woke, and the
+     blast-radius output.
 
    If `harness-files` is touched, also run `scripts/hooks-diff.sh <base>` yourself and keep its output
    unchanged for step 6; pass it to that card's system reviewer too. If `dependencies` is touched, do
