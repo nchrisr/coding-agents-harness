@@ -21,6 +21,11 @@ the wrong system, no card, no check, a rule in prose that a tool could have enfo
 lesson can't be stated without them, it's a project rule, not a harness rule: it goes in the project's
 own `AGENTS.md` or card instead.
 
+**Sort the lesson first.** Is it about *how the agent works* (how it checks, searches, plans, reviews
+or verifies), true whatever the project builds? Then it's a harness finding. Is it *what an expert in
+this subject knows* (how money is rounded here, what this framework expects)? Then it belongs in that
+project's card or docs, even if it took a bug to learn it.
+
 **Never include an unfixed security hole.** Fix it in the project first.
 
 **A finding that proposes a tool, hook or rule** is tested first, following `evaluate.md`.

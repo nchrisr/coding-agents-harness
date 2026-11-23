@@ -93,6 +93,9 @@ that says nothing specific to this project should be cut or rewritten.
   project's real risks only. Agents read it on every turn, so it stays under 250 lines: detail goes in
   `docs/`, with a one-line pointer saying when to read it. Instructions for an optional tool are
   conditional ("if `.codegraph/` exists…"), so they mean nothing where it isn't installed.
+  Every line here is paid for on every turn; an on-demand file costs nothing until it's used. So a
+  procedure needed only in one situation (a release, a migration, a demo) becomes a command or skill
+  that loads when it's invoked, and `AGENTS.md` keeps one line saying when to use it.
 - **`docs/systems/`:** one card per system from `<harness>/templates/system-card.md` and
   `<harness>/templates/cards/`, plus a `README.md` listing them. "How it breaks" holds this project's
   real incidents; if there are none yet, say so rather than inventing some.

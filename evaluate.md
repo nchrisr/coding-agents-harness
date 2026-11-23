@@ -17,10 +17,19 @@ measuring nothing, so these rules come first.
    against an answer key checked against the code, not just the docs. Docs drift, and a key written
    from them marks correct answers wrong. Check the grader's corrections to the key, fix the key, and
    grade every arm again with it.
+   **When there's no reliable key** (open-ended tasks, or a key you can't check), compare instead: the
+   grader sees the outputs side by side, labelled only with random ids, and says which is better and
+   why, with evidence from the outputs. Comparison needs no right answer.
 5. **Measure what you care about.** Count cost and correctness, not just tool calls or time. Fewer
    calls can cost the same if each call brings more text into the context.
 6. **Report the size.** Say how many runs per arm, and what wasn't tested (editing tasks, long
    sessions, other languages). Two runs show large differences, not small ones.
+
+**Try variations, not one version.** A finding's first wording is rarely its best. Write two or three
+variations of the proposed rule or tool setup, and include at least one that changes how the agent
+works and one that changes what it's told about the subject. Run each on the same task, compare them
+as above, then combine what helped from each into the version that goes in the harness. Keep the
+losing variations and the reason they lost in the finding, so the next attempt doesn't repeat them.
 
 A transcript check for Claude Code runs started with `claude -p --output-format stream-json --verbose`
 (swap in the tool's name):
