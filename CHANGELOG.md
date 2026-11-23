@@ -2,6 +2,11 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.6.1 — 2026-11-23
+- README: what the harness gives a project (including security and token use), a diagram of how it
+  works, measured results, supported agents and optional tools, and a fuller "Changing this repo".
+  Adds the MIT license note. No change for projects.
+
 ## 0.6.0 — 2026-11-23
 - Optional code index: `packs/tools/codegraph.md` and `scripts/cg`. Setup asks the owner, for a
   project of a few hundred source files or more. CodeGraph is installed as a pinned dev dependency
