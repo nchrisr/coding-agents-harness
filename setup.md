@@ -59,8 +59,11 @@ object to. A long question sheet wears the owner out; most technical choices are
 4. **Every clash** between a harness rule and what the project already does (naming, branching, a
    lint rule its code would fail, a stricter rule of its own): one question each. Never resolve a
    clash silently in the harness's favour.
-5. **A code index,** only for a project of a few hundred source files or more: CodeGraph, set up as
-   `packs/tools/codegraph.md` says. It adds a third-party tool, so it's my call. Recommend it when
+5. **A code index,** only for a project of a few hundred source files or more. Explain it plainly: a
+   searchable map of the code, so agents find where something is defined and what uses it in one
+   step, instead of searching file by file. During testing it cut cost by about 17%, with equally good
+   answers. The cost: a third-party tool (CodeGraph, about 200 MB, set up as
+   `packs/tools/codegraph.md` says) and one command to build the map. It's my call. Recommend it when
    agents spend many tool calls finding code here; otherwise leave it out.
 
 **Decide and list** (one "here's what I chose" list, a line each, with the reason; I object line by line):
