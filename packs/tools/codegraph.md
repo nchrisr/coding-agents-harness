@@ -30,7 +30,8 @@ it was tested.
 - **In `AGENTS.md`,** a short, conditional note: "If `.codegraph/` exists, find code with
   `scripts/cg query|callers|callees|impact <symbol>` before searching; it answers with file:line.
   Then read only the lines you need."
-- **Allowlist:** `Bash(scripts/cg:*)` in `.claude/settings.json`.
+- **Allowlist:** `Bash(scripts/cg:*)` in `.claude/settings.json`; for Gemini CLI,
+  `run_shell_command(scripts/cg)` in `tools.allowed` in `.gemini/settings.json`.
 
 ## What it brings in (version 1.6.4, checked 2026-11-23)
 - `@colbymchenry/codegraph` plus one platform package. No dependencies of their own outside the

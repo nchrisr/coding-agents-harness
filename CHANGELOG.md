@@ -2,6 +2,21 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.0 — 2026-11-23
+Gemini CLI is a supported agent, next to Claude Code and Codex. What changes for projects:
+- Only for owners who use Gemini CLI here. Setup (and an upgrade, if the owner says yes) writes
+  `.gemini/settings.json`: Gemini reads `AGENTS.md`; an allowlist of read-only git commands and
+  the project's checks; the same end-of-turn check script as Claude Code's Stop hook, run as an
+  `AfterAgent` hook; and the formatter after edits. Plus the four review agents in `.gemini/agents/`
+  and the `spec` and `review-loop` commands in `.gemini/commands/`, with the templates' text.
+- `check-on-stop.sh` finds the project folder under either agent. `hooks-diff.sh` also shows hooks in
+  `.gemini/settings.json` and scripts in `.gemini/hooks/`. Recopy both scripts.
+- The harness-files card owns `.gemini/*` where it exists, and a change to Gemini's
+  `context.fileName` (which instructions files it reads) is a tripwire.
+- The approval lock covers `.gemini/` (GitHub and Azure Repos packs; GitLab uses GitHub's list).
+- Owner step, once per machine: the trust rule pointer in `~/.gemini/GEMINI.md`, locked like the
+  others (`trust-rule.md`).
+
 ## 0.8.0 — 2026-11-23
 - New `eval/`: an evaluation suite that checks whether a harness version makes agents better before
   it merges. A small TypeScript shop app, set up with this harness, gets ten tasks: three features

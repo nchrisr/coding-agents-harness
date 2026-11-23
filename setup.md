@@ -29,8 +29,10 @@ Find out:
 - Its commands for typecheck, tests, lint, format and build, and what CI runs
 - Where it's hosted (GitHub, GitLab, Azure Repos, none), its branches, and how changes reach the main
   branch; its deploy path and database migration process
-- Any existing agent instructions (AGENTS.md, CLAUDE.md, `.claude/`) and `.harness-version`. Build on
-  them; never overwrite a rule that is stricter than the harness's
+- Any existing agent instructions (AGENTS.md, CLAUDE.md, GEMINI.md, `.claude/`, `.gemini/`) and
+  `.harness-version`. Build on them; never overwrite a rule that is stricter than the harness's
+- Which coding agents the owner uses here: Claude Code, Codex, Gemini CLI. The pointers found in the
+  glass case check are a good guide
 - **Its systems, cut by how they fail:** sign-in and access, data and schema, money and numbers,
   privacy, payments, performance, state and timing, and anything this project has that those miss.
   For each: which files, and what has already gone wrong (git history, fix commits, docs)
@@ -70,6 +72,7 @@ object to. A long question sheet wears the owner out; most technical choices are
 - the systems, their cards, settings, files and tripwires; the tier 3 list
 - the language packs and which lint rules go on now or later
 - the platform pack and its committed file
+- the agents to write files for (Phase 3), from the ones the owner uses
 - demos, private notes, parallel work, and where the review record goes
 
 If the project isn't in git yet, say so first, and offer to start a repository before anything else:
@@ -116,6 +119,27 @@ that says nothing specific to this project should be cut or rewritten.
 - **`.claude/settings.json`**, merged with any existing settings: an allowlist of read-only git
   commands and this project's check commands only; the Stop hook with a timeout longer than the checks
   and a status message; a PostToolUse formatter hook on `Edit|Write|MultiEdit` that never fails the edit.
+- **Gemini CLI** (only if the owner uses it). The same pieces, in Gemini's places. Agents and commands
+  keep their template text, so the two agents never drift apart:
+  - **`.gemini/settings.json`**, merged with any existing settings:
+    - `context.fileName` set to `["AGENTS.md", "GEMINI.md"]`. Gemini then reads `AGENTS.md`, so no
+      project `GEMINI.md` is needed. Keep `GEMINI.md` in the list: the same setting decides whether
+      the owner's personal pointer to the trust rule is read.
+    - `tools.allowed`: the same read-only git commands and check commands, written as
+      `run_shell_command(git status)`. Not project policy files: Gemini ignores `.gemini/policies/` today.
+    - `hooks.AfterAgent`: the same `check-on-stop.sh`, with `timeout` in milliseconds, longer than the
+      checks. Gemini's end-of-turn hook works like Claude's Stop hook: exit 2 sends the agent back
+      with the message, and `stop_hook_active` stops a loop. One copy of the script serves both
+      agents: in `.claude/hooks/` if Claude Code is used too, otherwise in `.gemini/hooks/`.
+    - `hooks.AfterTool` on `write_file|replace`: the formatter, never failing the edit.
+  - **`.gemini/agents/`:** the four agents from the templates, the same text with Gemini's frontmatter:
+    `name`, `description`, and `tools` as a list of Gemini's tool names. Reviewers get
+    `[read_file, grep_search, glob, list_directory, run_shell_command]`; the fixer adds
+    `write_file` and `replace`.
+  - **`.gemini/commands/`:** `spec.toml` and `review-loop.toml`: `description`, and `prompt` holding
+    the template's text with `$ARGUMENTS` written as `{{args}}`. No `!{...}` shell injection in a
+    prompt; the agent runs commands itself, where the allowlist applies.
+  - An on-demand procedure becomes a skill in `.agents/skills/`, which Gemini and other agents both read.
 - **Linter settings** I approved from the language packs.
 - **Decisions doc** (for example `docs/decisions.md`): each entry gives the decision, its date, why, and
   what was rejected. Seed it with the review loop and the systems approach.
@@ -145,6 +169,8 @@ that says nothing specific to this project should be cut or rewritten.
 Don't just say it's done. Check and report each, including what you couldn't check:
 1. Run the Stop hook with sample input on a passing change and on a deliberate failure; confirm the
    exit codes; remove the failure. Confirm `jq` is installed and the settings file is valid JSON.
+   For Gemini CLI, run it once more with `GEMINI_PROJECT_DIR` set instead of `CLAUDE_PROJECT_DIR`,
+   and confirm `.gemini/settings.json` is valid JSON too.
 2. Run `scripts/systems-touched.sh` on a sample change touching one card's files, and on one that
    trips another card's tripwire. Confirm both cards are listed with the right setting. Then test
    **every** `watch` pattern with two added lines: one that creates the risky thing (must trip) and one
@@ -159,6 +185,8 @@ Don't just say it's done. Check and report each, including what you couldn't che
    card's invariants and one decoy that looks wrong but is what the spec asks for. The right system
    reviewer should find the bug and leave the decoy; the fixer should prove it with a failing test and
    fix it; the recheck should see only the fixer's changes. Tell me before deleting the branch.
+   With Gemini CLI as well, run the dry run in Gemini too, and check that each reviewer saw only what
+   the loop gave it: Gemini's docs don't say how much of the conversation a subagent receives.
 
 Hooks, agents and commands may only load in a new session; tell me if so. Then give me numbered owner
 steps: the approval lock's platform settings and a first real task to try. List what you created and what you skipped, and why. Wait

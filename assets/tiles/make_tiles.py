@@ -12,6 +12,7 @@ tiles = [  # file, label, simple-icons slug or None, brand colour
     ('azure-repos', 'Azure Repos', None, '0078D4'),
     ('claude-code', 'Claude Code', 'claude', 'D97757'),
     ('codex', 'Codex', 'openai', '000000'),
+    ('gemini-cli', 'Gemini CLI', 'googlegemini', '8E75B2'),
 ]
 FONT = "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 for name, label, slug, colour in tiles:

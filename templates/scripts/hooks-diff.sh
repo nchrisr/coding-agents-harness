@@ -13,9 +13,9 @@ root=$(git rev-parse --show-toplevel) || exit 1
 cd "$root" || exit 1
 
 # Files whose whole content runs: hook scripts and git hooks.
-script_pattern='^(\.claude/hooks/|\.codex/hooks/|\.husky/|\.githooks/)|^\.pre-commit-config\.ya?ml$'
+script_pattern='^(\.claude/hooks/|\.codex/hooks/|\.gemini/hooks/|\.husky/|\.githooks/)|^\.pre-commit-config\.ya?ml$'
 # Files whose hook entries run: agent settings and package manifests.
-settings_files='.claude/settings.json .codex/config.json package.json'
+settings_files='.claude/settings.json .codex/config.json .gemini/settings.json package.json'
 
 # Prints a file's content at the base ref, or in the working tree when ref is "WORKTREE".
 read_at() {
