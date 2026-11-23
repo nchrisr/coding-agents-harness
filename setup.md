@@ -84,12 +84,14 @@ that says nothing specific to this project should be cut or rewritten.
   **Systems** section listing each card with its setting, and the rule that a tripwire raises a change
   to teach-me; the working rules; the code style (`<harness>/rules/style.md` plus the language packs);
   the trust rule text from `<harness>/trust-rule.md`; and **hard constraints** drawn from this
-  project's real risks only.
+  project's real risks only. Agents read it on every turn, so it stays under 250 lines: detail goes in
+  `docs/`, with a one-line pointer saying when to read it. Instructions for an optional tool are
+  conditional ("if `.codegraph/` exists…"), so they mean nothing where it isn't installed.
 - **`docs/systems/`:** one card per system from `<harness>/templates/system-card.md` and
   `<harness>/templates/cards/`, plus a `README.md` listing them. "How it breaks" holds this project's
   real incidents; if there are none yet, say so rather than inventing some.
-- **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`** and **`scripts/deps-check.sh`** from
-  the templates, with this project's base branch as the default.
+- **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`**, **`scripts/deps-check.sh`** and
+  **`scripts/blast-radius.sh`** from the templates, with this project's base branch as the default.
 - **`scripts/doc-refs-check.py`** from the template, run by the Stop hook and in CI. It fails when
   `AGENTS.md` or `docs/` names a file that's gone, a line past a file's end, or a function no longer
   where the doc says, and when a card's `owns` path no longer exists. Write references it can follow:
