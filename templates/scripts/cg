@@ -1,0 +1,32 @@
+#!/bin/bash
+# Small answers from the project's code index (CodeGraph, packs/tools/codegraph.md): where a symbol
+# is defined, who calls it, what it calls, and what a change to it affects. Names and file:line only,
+# no source; read the lines you need afterwards.
+#
+# Usage: scripts/cg query|callers|callees|impact <symbol> [--limit N] [--depth N]
+# Only these four commands are allowed. Telemetry, update checks and the background helper are off.
+# The index is brought up to date (well under a second for a small change) before every answer.
+
+set -u
+case "${1:-}" in
+  query|callers|callees|impact) ;;
+  *) echo "usage: scripts/cg query|callers|callees|impact <symbol> [--limit N] [--depth N]" >&2; exit 2 ;;
+esac
+
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+export DO_NOT_TRACK=1 CODEGRAPH_TELEMETRY=0 CODEGRAPH_NO_UPDATE_CHECK=1 CODEGRAPH_NO_DAEMON=1
+
+# ADAPT: the pinned install from setup, for example node_modules/.bin/codegraph.
+cg="${CODEGRAPH_BIN:-node_modules/.bin/codegraph}"
+if [ ! -x "$cg" ]; then
+  echo "CodeGraph isn't installed here ($cg). Use Grep and Read instead." >&2
+  exit 1
+fi
+if [ ! -d .codegraph ]; then
+  echo "No code index yet. Building it is the owner's call: $cg init --yes" >&2
+  exit 1
+fi
+
+"$cg" sync >/dev/null 2>&1 || echo "warning: index sync failed; answers may be out of date" >&2
+exec "$cg" "$@"

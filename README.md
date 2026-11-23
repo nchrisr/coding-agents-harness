@@ -42,6 +42,7 @@ Keep this list up to date with every change to `packs/` or `rules/`.
 | `rules/` | Working rules and code style shared by every project. |
 | `packs/languages/` | Checks, linters and classic traps per language. |
 | `packs/platforms/` | The approval lock on GitHub, GitLab and Azure Repos. |
+| `packs/tools/` | Optional tools a project can choose, set up safely (a code index). |
 | `templates/` | Starting points for agents, commands, hooks, scripts and system cards. |
 | `CHANGELOG.md` | What changed in each version, so an upgrade can say what's new. |
 

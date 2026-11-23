@@ -59,6 +59,12 @@ object to. A long question sheet wears the owner out; most technical choices are
 4. **Every clash** between a harness rule and what the project already does (naming, branching, a
    lint rule its code would fail, a stricter rule of its own): one question each. Never resolve a
    clash silently in the harness's favour.
+5. **A code index,** only for a project of a few hundred source files or more. Explain it plainly: a
+   searchable map of the code, so agents find where something is defined and what uses it in one
+   step, instead of searching file by file. During testing it cut cost by about 17%, with equally good
+   answers. The cost: a third-party tool (CodeGraph, about 200 MB, set up as
+   `packs/tools/codegraph.md` says) and one command to build the map. It's my call. Recommend it when
+   agents spend many tool calls finding code here; otherwise leave it out.
 
 **Decide and list** (one "here's what I chose" list, a line each, with the reason; I object line by line):
 - the systems, their cards, settings, files and tripwires; the tier 3 list
@@ -124,6 +130,10 @@ that says nothing specific to this project should be cut or rewritten.
   name from the decisions doc back to the full spec.
 - **The approval lock:** the platform pack's committed file (such as `CODEOWNERS`) covering the harness
   files. The platform settings are an owner step.
+- **Code index** (only if I said yes): as `packs/tools/codegraph.md` says. A pinned dev dependency
+  installed with scripts off, `scripts/cg` from the template, the conditional note in `AGENTS.md`, and
+  `Bash(scripts/cg:*)` in the allowlist. Never `codegraph install`, never its MCP server. I build the
+  index.
 - **Parallel work** (only if wanted): `scripts/setup-worktree.sh`, safe to re-run: copies env files,
   links private notes, installs dependencies, finds a free port. Exclude worktrees from every check.
 - **`.harness-version`:** the harness `VERSION` this was built from.

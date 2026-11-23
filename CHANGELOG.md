@@ -2,6 +2,14 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.6.0 — 2026-11-23
+- Optional code index: `packs/tools/codegraph.md` and `scripts/cg`. Setup asks the owner, for a
+  project of a few hundred source files or more. CodeGraph is installed as a pinned dev dependency
+  with install scripts off, and called only through `scripts/cg`. That allows four small commands
+  (where a symbol is, its callers, its callees, what a change affects), answering with file:line, and
+  turns off telemetry, update checks and the background helper. Never `codegraph install` or its MCP
+  server. The pack lists everything it brings in. Projects without it are unchanged.
+
 ## 0.5.3 — 2026-11-23
 - `AGENTS.md` has a 250-line budget, since agents read it on every turn: detail goes in `docs/` with a
   one-line pointer, and instructions for an optional tool are conditional. The Stop hook enforces it

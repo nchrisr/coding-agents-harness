@@ -18,6 +18,7 @@ owns:
   - 'scripts/hooks-diff.sh'
   - 'scripts/doc-refs-check.py'
   - 'scripts/blast-radius.sh'
+  - 'scripts/cg'
 watch:
   - '"hooks"'
   - '"(pre|post)?install"|"prepare"|"prepublish(Only)?"|"postpack"'
