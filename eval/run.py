@@ -4,6 +4,7 @@
   python3 eval/run.py dry-run                      check the whole pipeline, no model calls
   python3 eval/run.py run                          evaluate this checkout's harness (2 runs per task)
   python3 eval/run.py run --compare-to origin/main this checkout and main, interleaved, then compare
+  python3 eval/run.py run --agent codex           the same with Codex instead of Claude Code
   python3 eval/run.py compare [NEW.json] [OLD.json]
 """
 import argparse
@@ -20,13 +21,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from harness_eval import agent, dry_run, grade, report, transcript, workspace  # noqa: E402
+from harness_eval import (agent, codex_agent, codex_transcript, dry_run, grade, report,  # noqa: E402
+                          transcript, workspace)
 from harness_eval.pipeline import (build_results, prepare_arm, results_path, score_run,  # noqa: E402
                                   side_by_side_pairs, start_workspace)
 from harness_eval.common import (RESULTS_DIR, RUNS_DIR, EvalError, load_tasks,  # noqa: E402
                                  read_json, say, write_json)
 
-DEFAULT_MODEL = 'claude-sonnet-5-5'
+DEFAULT_MODELS = {'claude': 'claude-sonnet-5-5', 'codex': 'gpt-6-luna'}
 DEFAULT_GRADER = 'claude-haiku-5-5'
 
 
@@ -68,15 +70,26 @@ def one_run(job: dict, args, budget: Budget, out_dir: Path) -> dict:
     try:
         start = start_workspace(task, arm['dir'], arm['info'], ws, run_dir)
         has_harness = arm['info']['ref'] != workspace.NO_HARNESS
-        prompt = agent.prompt_for(task, has_harness)
         say(f'  start {label}')
-        ran = agent.run_agent(ws, scratch / 'run', prompt, args.model, args.max_usd_per_run,
-                              args.timeout_minutes * 60)
+        if args.agent == 'codex':
+            prompt = codex_agent.prompt_for(task, has_harness)
+            ran = codex_agent.run_agent(ws, scratch / 'run', prompt, args.model, args.max_usd_per_run,
+                                        args.timeout_minutes * 60, args.prices)
+            shutil.move(str(scratch / 'run' / 'rollouts'), run_dir / 'rollouts')
+        else:
+            prompt = agent.prompt_for(task, has_harness)
+            ran = agent.run_agent(ws, scratch / 'run', prompt, args.model, args.max_usd_per_run,
+                                  args.timeout_minutes * 60)
         shutil.move(str(scratch / 'run' / 'transcript.jsonl'), run_dir / 'transcript.jsonl')
         shutil.move(str(scratch / 'run' / 'stderr.txt'), run_dir / 'stderr.txt')
-        facts = transcript.summarize(transcript.read_events(run_dir / 'transcript.jsonl'))
+        if args.agent == 'codex':
+            facts = codex_transcript.summarize(codex_transcript.read_run(run_dir), args.prices,
+                                               ran['over_budget'])
+            problems = codex_transcript.validity(facts, task, has_harness, args.model)
+        else:
+            facts = transcript.summarize(transcript.read_events(run_dir / 'transcript.jsonl'))
+            problems = transcript.validity(facts, task, has_harness, args.model)
         budget.add(facts['cost_usd'])
-        problems = transcript.validity(facts, task, has_harness, args.model)
         # Running out of money or time is the arm's failure, not a fault in the setup: the run
         # counts, and scores whatever it left.
         if ran['timed_out']:
@@ -104,6 +117,11 @@ def one_run(job: dict, args, budget: Budget, out_dir: Path) -> dict:
             'hooks': len(facts['hooks']),
             'model_seen': facts['init']['model'],
             'claude_code_version': facts['init']['claude_code_version'],
+            'codex_version': facts['init'].get('codex_version'),
+            'cost_estimated': facts.get('cost_estimated', False),
+            'checks_ran': facts.get('checks_ran'),
+            'reviewer_read_definition': facts.get('reviewer_read_definition'),
+            'sandbox_blocks': facts.get('sandbox_blocks'),
             'auth': ran['auth'],
             'final_text': facts['final_text'][:12000],
         })
@@ -139,7 +157,15 @@ def network_ok() -> bool:
 
 def evaluate(args) -> int:
     tasks = load_tasks(args.tasks)
-    if agent.auth_mode() == 'login' and not args.use_my_login:
+    auth = codex_agent.auth_mode() if args.agent == 'codex' else agent.auth_mode()
+    if args.agent == 'codex' and auth == 'login' and not args.use_my_login:
+        raise EvalError(
+            'No CODEX_API_KEY or OPENAI_API_KEY is set. With one, each run gets a throwaway home and '
+            'Codex home. Without one, runs use your Codex login and real home folder: the sandbox keeps '
+            'commands to the workspace, each run checks your shell, git, npm and Codex settings before '
+            'and after, and every run\'s session stays in your Codex history (~/.codex/sessions). Export '
+            'a key, or pass --use-my-login to accept that.')
+    if args.agent == 'claude' and auth == 'login' and not args.use_my_login:
         raise EvalError(
             'No ANTHROPIC_API_KEY or CLAUDE_CODE_OAUTH_TOKEN is set. With one, each run gets a '
             'throwaway home folder. Without one, runs share your real home folder, and some tasks '
@@ -179,7 +205,7 @@ def evaluate(args) -> int:
         elif args.out:
             target = Path(args.out)
         else:
-            target = results_path(arm['info'])
+            target = results_path(arm['info'], args.agent)
         arm['results'] = target
         if target.exists() and not args.force:
             raise EvalError(f'{target} exists. Pass --force to replace it, or --out to write elsewhere.')
@@ -188,8 +214,11 @@ def evaluate(args) -> int:
         for task in tasks:
             for arm in arms:
                 jobs.append({'task': task, 'arm': arm, 'n': n})
-    say(f'{len(jobs)} runs ({len(tasks)} tasks x {args.runs} runs x {len(arms)} arm(s)), model '
-        f'{args.model}, sign-in: {agent.auth_mode()}, at most ${args.max_usd_total:.2f} in all.')
+    say(f'{len(jobs)} runs ({len(tasks)} tasks x {args.runs} runs x {len(arms)} arm(s)), agent '
+        f'{args.agent}, model {args.model}, sign-in: {auth}, at most ${args.max_usd_total:.2f} in all.')
+    if args.agent == 'codex':
+        say('Note: Codex reports tokens, not dollars; costs and the dollar caps use '
+            f'${args.prices[0]}/${args.prices[1]}/${args.prices[2]} per million input/cached/output tokens.')
     for arm in arms:
         if arm['info'].get('dirty'):
             say(f'Note: {arm["name"]} includes uncommitted harness edits.')
@@ -273,20 +302,30 @@ def eval_changed_since(ref: str) -> str:
     return ''
 
 
+def agent_suffix(path: Path) -> str:
+    """'-codex' for a Codex results file, '' for Claude Code's."""
+    for name in DEFAULT_MODELS:
+        if name != 'claude' and path.stem.endswith(f'-{name}'):
+            return f'-{name}'
+    return ''
+
+
 def version_key(path: Path):
     parts = []
-    for piece in path.stem.split('.'):
+    stem = path.stem[:len(path.stem) - len(agent_suffix(path))]
+    for piece in stem.split('.'):
         parts.append(int(piece) if piece.isdigit() else -1)
     return parts
 
 
 def previous_results(current: Path):
-    """The results file for the highest version below this one."""
+    """The results file for the highest version below this one, from the same agent."""
     if not current.stem[0].isdigit():
         return None
     candidates = []
     for path in RESULTS_DIR.glob('*.json'):
-        if path != current and path.stem[0].isdigit() and version_key(path) < version_key(current):
+        if (path != current and path.stem[0].isdigit() and agent_suffix(path) == agent_suffix(current)
+                and version_key(path) < version_key(current)):
             candidates.append(path)
     if not candidates:
         return None
@@ -308,13 +347,27 @@ def compare_cmd(args) -> int:
 
 # ---------------------------------------------------------------- command line
 
+def parse_prices(text):
+    if not text:
+        return None
+    try:
+        prices = tuple(float(part) for part in text.split(','))
+    except ValueError:
+        prices = ()
+    if len(prices) != 3:
+        raise EvalError('--usd-per-mtok takes three numbers: INPUT,CACHED,OUTPUT')
+    return prices
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest='command', required=True)
 
     dry = sub.add_parser('dry-run', help='check the whole pipeline without calling a model')
     dry.add_argument('--tasks', nargs='*', help='task ids or kinds (feature, review, security)')
-    dry.add_argument('--model', default=DEFAULT_MODEL)
+    dry.add_argument('--agent', choices=sorted(DEFAULT_MODELS), default='claude',
+                     help='the agent whose transcripts are checked (default claude)')
+    dry.add_argument('--model', help='default: claude-sonnet-5-5 for claude, gpt-6-luna for codex')
     dry.add_argument('--keep', action='store_true', help='keep the temporary workspaces')
 
     go = sub.add_parser('run', help='real runs: costs money')
@@ -328,7 +381,11 @@ def main() -> int:
                     help='skip the blind side-by-side comparison of each pair of changes')
     go.add_argument('--runs', type=int, default=2, help='runs per task per arm (default 2, the minimum to judge a change)')
     go.add_argument('--tasks', nargs='*', help='task ids or kinds (feature, review, security)')
-    go.add_argument('--model', default=DEFAULT_MODEL)
+    go.add_argument('--agent', choices=sorted(DEFAULT_MODELS), default='claude',
+                    help='the agent to run: claude (Claude Code, default) or codex')
+    go.add_argument('--model', help='default: claude-sonnet-5-5 for claude, gpt-6-luna for codex')
+    go.add_argument('--usd-per-mtok', help='codex only: INPUT,CACHED,OUTPUT dollars per million tokens, '
+                    'for the cost estimate and the dollar caps (default: the table in codex_agent.py)')
     go.add_argument('--grader-model', default=DEFAULT_GRADER)
     go.add_argument('--jobs', type=int, default=2, help='runs at once (default 2)')
     go.add_argument('--max-usd-per-run', type=float, default=4.0)
@@ -349,6 +406,11 @@ def main() -> int:
     args = parser.parse_args()
     os.umask(0o022)
     try:
+        if args.command in ('dry-run', 'run'):
+            args.model = args.model or DEFAULT_MODELS[args.agent]
+            args.prices = None
+            if args.agent == 'codex':
+                args.prices = codex_agent.prices_for(args.model, parse_prices(getattr(args, 'usd_per_mtok', None)))
         if args.command == 'dry-run':
             return dry_run.main(args)
         if args.command == 'run':

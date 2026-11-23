@@ -53,11 +53,11 @@ HOME_WATCH = ['.claude/settings.json', '.claude/settings.local.json', '.claude/C
               '.profile', '.gitconfig', '.npmrc', '.ssh', '.config/gh', '.aws']
 
 
-def home_state() -> dict:
+def home_state(watch=None) -> dict:
     """Size and change time of each watched file in the real home folder (folders: newest inside)."""
     home = Path(os.environ['HOME'])
     state = {}
-    for rel in HOME_WATCH:
+    for rel in watch or HOME_WATCH:
         path = home / rel
         if path.is_dir():
             newest = 0.0

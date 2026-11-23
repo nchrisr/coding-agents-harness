@@ -87,6 +87,52 @@ None of these is a sandbox: the agent has a shell running as you. The tasks are 
 taken (`.invalid` addresses, fake keys, a marker file), and agents aren't adversaries, but for real
 isolation run it in a container.
 
+## Codex
+
+```bash
+python3 eval/run.py dry-run --agent codex
+python3 eval/run.py run --agent codex --compare-to origin/main
+```
+Claude Code stays the default; `--agent codex` runs the same tasks with `codex exec`, scored the
+same way, so the two agents' results line up task by task. Results go to
+`results/<VERSION>-codex.json` and are compared only with other Codex files. The grader is still
+Claude, so both agents are graded by the same model. Needs `codex` as well as the list above.
+
+What differs, and why:
+- **What the harness gives Codex.** Codex reads `AGENTS.md`; it has no Stop hook, no `/review-loop`
+  command and no subagent files of its own from the harness. So the harness arm's review prompt
+  points Codex at `.claude/commands/review-loop.md` and the agent files beside it, and Codex starts
+  its own subagents (`reviewer`, `system_reviewer_<card>`, `fixer`). The other prompts are word for
+  word the same as Claude Code's.
+- **Proof it ran** (`harness_eval/codex_transcript.py`), read from the session files Codex writes
+  for each agent, which `codex exec --json` doesn't fully echo: the model; `AGENTS.md` loaded in a
+  harness arm and absent in a no-harness one; a review's `reviewer` subagent started; no MCP tool
+  or web search used. Whether the agent ran `npm run check` (what AGENTS.md asks instead of the Stop
+  hook) and whether the reviewer read its definition file are recorded, not required.
+- **The sandbox.** Codex runs commands in its own sandbox, the same in every arm: write access to the
+  workspace, its `.git` folder and the run's temp folder, network on (as for Claude Code), the rest
+  read-only. A command the sandbox blocks makes a feature or review run not count (a setup fault);
+  in a security task it's the risky move being stopped, and is recorded (`sandbox_blocks`). Claude
+  Code has no such sandbox, so a security task can come out differently for that reason alone.
+- **Codex costs are estimates from a price table, not billed figures.** Codex reports tokens, not
+  dollars. Every Codex cost here, and both dollar caps, is tokens times the table in
+  `harness_eval/codex_agent.py`: OpenAI's standard prices from its pricing page, read 2026-11-23.
+  Check them against https://developers.openai.com/api/docs/pricing before trusting a total, and
+  pass `--usd-per-mtok INPUT,CACHED,OUTPUT` when they change or for a model not in the table. Signed
+  in with ChatGPT, runs come out of your plan instead. Codex has no dollar cap of its own, so the
+  runner reads the session files while a run goes and stops it at the cap; `--timeout-minutes`
+  stops it on time.
+
+`results/validation-0.9.2-codex.json` is the first real Codex run, kept as a worked example: one
+review task on gpt-6-luna, which counted, with the bug fixed and the decoy kept. Estimated at $0.019
+(755,518 tokens, 88% of them cache reads at $0.01 a million), plus $0.04 of Claude grading. It ran
+before this branch was moved onto 0.9.1, so its harness version reads 0.8.1.
+- **Sign-in.** `export CODEX_API_KEY=...` (or `OPENAI_API_KEY`) gives each run an empty home and
+  Codex home. Without one, `--use-my-login` uses your Codex login and real `~/.codex`, with your
+  `config.toml` and rules ignored; the runner stops if `~/.codex/AGENTS.md` exists, since Codex
+  would load it into every run. Each run checks your shell, git, npm and Codex settings before and
+  after, and its session files stay in your Codex history.
+
 ## How a run works
 
 1. **Build** a fresh copy of the practice app (`app/`) in a temporary folder outside this

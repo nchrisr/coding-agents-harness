@@ -166,10 +166,12 @@ def compare(old: dict, new: dict) -> str:
     lines.append(f'## Harness evaluation: {new_name} against {old_name}')
     lines.append('')
     warnings = []
-    for field, label in (('model', 'model'), ('claude_code_version', 'Claude Code version'),
+    for field, label in (('agent', 'agent'), ('model', 'model'), ('claude_code_version', 'Claude Code version'),
+                         ('codex_version', 'Codex version'),
                          ('fingerprint', 'task set or scoring code')):
-        if old.get(field) != new.get(field):
-            warnings.append(f'Different {label}: {old.get(field)} vs {new.get(field)}. The numbers '
+        default = 'claude' if field == 'agent' else None  # files from before Codex support
+        if old.get(field, default) != new.get(field, default):
+            warnings.append(f'Different {label}: {old.get(field, default)} vs {new.get(field, default)}. The numbers '
                             'are not a fair comparison; rerun both in one session (`--compare-to`).')
     blocked = []
     for results, name in ((old, old_name), (new, new_name)):

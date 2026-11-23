@@ -3,11 +3,12 @@ fail before the work and pass on a reference solution; unsafe outcomes are caugh
 fool the scorer are undone; the transcript checks accept a good run and reject a bad one; and the
 results, comparison and side-by-side steps run end to end on stub data."""
 import argparse
+import json
 import shutil
 import tempfile
 from pathlib import Path
 
-from . import grade, report, score, transcript, workspace
+from . import codex_agent, codex_transcript, grade, report, score, transcript, workspace
 from .common import EvalError, copy_tree, load_tasks, write_json
 from .pipeline import build_results, prepare_arm, score_run, side_by_side_pairs, start_workspace
 
@@ -45,6 +46,104 @@ def fake_transcript(task: dict, has_harness: bool, model: str, denied: bool = Fa
                    'modelUsage': {model: {'inputTokens': 10, 'outputTokens': 1000,
                                           'cacheReadInputTokens': 50000, 'cacheCreationInputTokens': 9000}}})
     return events
+
+
+def fake_codex_run(task: dict, has_harness: bool, model: str, folder: Path, reviewer: bool = True,
+                   blocked: bool = False, finished: bool = True) -> Path:
+    """A run folder shaped like a real `codex exec --json` run (see a run's rollouts/ in eval/runs/):
+    the event stream, the main agent's session file and, for a review, a reviewer subagent's."""
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / 'rollouts').mkdir(exist_ok=True)
+    root_id, sub_id = '01a2-root', '01a2-sub'
+
+    def item(item_type, **fields):
+        return {'type': 'event_msg', 'payload': {'type': 'item_completed', 'item': dict(type=item_type, **fields)}}
+
+    def tokens(n):
+        return {'type': 'event_msg', 'payload': {'type': 'token_count', 'info': {'total_token_usage': {
+            'input_tokens': n, 'cached_input_tokens': n // 2, 'cache_write_input_tokens': 0,
+            'output_tokens': n // 20, 'reasoning_output_tokens': 0, 'total_tokens': n + n // 20}}}}
+
+    root = [{'type': 'session_meta', 'payload': {'id': root_id, 'session_id': root_id, 'cli_version': '0.0.0',
+                                                 'thread_source': 'user'}},
+            {'type': 'turn_context', 'payload': {'model': model, 'approval_policy': 'never',
+                                                 'sandbox_policy': {'type': 'workspace-write'}}}]
+    if has_harness:
+        root.append({'type': 'response_item', 'payload': {'type': 'message', 'role': 'user', 'content': [
+            {'type': 'input_text', 'text': '# AGENTS.md instructions for /tmp/shop\n\n<INSTRUCTIONS>...'}]}})
+    root.append(item('CommandExecution', command=['/bin/zsh', '-lc', 'npm run check'], exit_code='0',
+                     aggregated_output='Operation not permitted' if blocked else 'ok'))
+    root.append(item('FileChange', changes={'/tmp/shop/src/money.ts': {'type': 'update'}}))
+    sub = []
+    if task['kind'] == 'review' and has_harness and reviewer:
+        root.append(item('SubAgentActivity', kind='started', agent_path='/root/reviewer', agent_thread_id=sub_id))
+        sub = [{'type': 'session_meta', 'payload': {'id': sub_id, 'session_id': root_id, 'parent_thread_id': root_id,
+                                                    'thread_source': 'subagent', 'agent_path': '/root/reviewer'}},
+               item('CommandExecution', command=['/bin/zsh', '-lc', 'cat .claude/agents/reviewer.md'],
+                    exit_code='0', aggregated_output='---'),
+               tokens(20000)]
+    root.append(tokens(100000))
+    stream = [{'type': 'thread.started', 'thread_id': root_id}, {'type': 'turn.started'},
+              {'type': 'item.completed', 'item': {'type': 'agent_message', 'text': 'Done.'}}]
+    if finished:
+        root.append({'type': 'event_msg', 'payload': {'type': 'task_complete', 'last_agent_message': 'Done.',
+                                                      'duration_ms': '60000'}})
+        stream.append({'type': 'turn.completed', 'usage': {}})
+    for name, events in (('rollout-root.jsonl', root), ('rollout-sub.jsonl', sub)):
+        if events:
+            (folder / 'rollouts' / name).write_text(''.join(json.dumps(e) + '\n' for e in events))
+    (folder / 'transcript.jsonl').write_text(''.join(json.dumps(e) + '\n' for e in stream))
+    return folder
+
+
+def check_codex_transcripts(task: dict, model: str, prices: tuple, root: Path, checks: Checks) -> None:
+    folder = root / f'codex-{task["id"]}'
+
+    def problems(name, has_harness=True, arm_harness=True, over_budget=False, **fake):
+        run = codex_transcript.read_run(fake_codex_run(task, has_harness, model, folder / name, **fake))
+        facts = codex_transcript.summarize(run, prices, over_budget)
+        return facts, codex_transcript.validity(facts, task, arm_harness, model)
+
+    facts, good = problems('good')
+    checks.check(not good, f'[codex] a good transcript counts {good or ""}')
+    checks.check(facts['cost_usd'] and facts['tokens']['total'] > 0 and facts['final_text'] == 'Done.'
+                 and facts['checks_ran'], '[codex] cost, tokens, final message and the check run are read')
+    _, unloaded = problems('unloaded', has_harness=False)
+    checks.check(any('AGENTS.md' in p for p in unloaded), '[codex] a harness run without AGENTS.md loaded doesn\'t count')
+    _, leaked = problems('leaked', arm_harness=False)
+    checks.check(any('no-harness' in p for p in leaked), '[codex] AGENTS.md in the no-harness arm doesn\'t count')
+    _, cut = problems('cut', finished=False)
+    checks.check(any('cut off' in p for p in cut), '[codex] a run with no end doesn\'t count')
+    _, capped = problems('capped', finished=False, over_budget=True)
+    checks.check(not capped, f'[codex] a run stopped at the dollar cap counts as a failed run {capped or ""}')
+    _, blocked = problems('blocked', blocked=True)
+    checks.check(bool(blocked) == (task['kind'] != 'security'),
+                 '[codex] a sandbox block is a setup fault, except in a security task')
+    if task['kind'] == 'review':
+        facts, _ = problems('read')
+        checks.check(facts['reviewer_read_definition'], '[codex] the reviewer reading its definition is seen')
+        _, lonely = problems('lonely', reviewer=False)
+        checks.check(any('reviewer' in p for p in lonely), '[codex] a review loop without its reviewer doesn\'t count')
+        prompt = codex_agent.prompt_for(task, True)
+        checks.check('.claude/commands/review-loop.md' in prompt and task['spec'] in prompt,
+                     '[codex] the review prompt points at the review loop and the spec')
+    known = {}
+    found = codex_agent.find_rollouts(folder / 'good', '01a2-root', 0, known)
+    expected = 2 if task['kind'] == 'review' else 1
+    checks.check(len(found) == expected and round(codex_agent.spent(found, prices), 4) == facts['cost_usd'],
+                 '[codex] the dollar-cap watcher finds every agent\'s session file and prices them as the reader does')
+
+
+def check_codex_config(root: Path, checks: Checks) -> None:
+    """Codex's own trusted-project entry is removed after a run; any other change is reported."""
+    config = root / 'codex-config.toml'
+    before = 'model = "x"\n'
+    ws = root / 'shop'
+    config.write_text(before + f'\n[projects."{ws.resolve()}"]\ntrust_level = "trusted"\n')
+    undone = codex_agent.config_after(config, before, ws) == [] and config.read_text() == before
+    config.write_text(before + 'notify = ["sh"]\n')
+    flagged = codex_agent.config_after(config, before, ws) != []
+    checks.check(undone and flagged, '[codex] Codex\'s own trust entry is undone; any other config change is flagged')
 
 
 def check_start(task: dict, ws: Path, run_dir: Path, checks: Checks) -> None:
@@ -126,18 +225,20 @@ def check_transcripts(task: dict, model: str, checks: Checks) -> None:
     checks.check(bool(unloaded), 'a harness run without the harness loaded doesn\'t count')
 
 
-def check_pipeline(records: list, tasks: list, arm: dict, model: str, root: Path, checks: Checks) -> None:
+def check_pipeline(records: list, tasks: list, arm: dict, model: str, agent_name: str, root: Path,
+                   checks: Checks) -> None:
     items = [{'key': r['task'], 'task': next(t for t in tasks if t['id'] == r['task']), 'message': 'stub'}
              for r in records]
     answers, _ = grade.grade_all(items, 'stub', stub=True, workdir=root)
     for record in records:
         if record['task'] in answers:
             record['graded'] = answers[record['task']]
-    fake_args = argparse.Namespace(model=model, grader_model='stub', runs=1)
+    fake_args = argparse.Namespace(model=model, grader_model='stub', runs=1, agent=agent_name)
     results = build_results(arm, records, fake_args, 0.0)
     write_json(root / 'results.json', results)
     summary = results['summary']
-    checks.check(summary['valid_runs'] == len(records) == len(tasks), f'results file written ({len(records)} runs)')
+    checks.check(summary['valid_runs'] == len(records) == len(tasks) and results['agent'] == agent_name,
+                 f'results file written ({len(records)} runs, agent {results["agent"]})')
     checks.check(summary['regressions_per_run'] == 0 and summary['bugs_fixed'] in (1.0, None),
                  'reference solutions score full marks')
     text = report.compare(results, results)
@@ -188,17 +289,22 @@ def main(args) -> int:
                 scored = check_solution(task, ws, run_dir, start, checks)
                 if task['kind'] == 'security':
                     check_unsafe(task, arm, root, checks)
-                check_transcripts(task, args.model, checks)
+                if args.agent == 'codex':
+                    check_codex_transcripts(task, args.model, args.prices, root, checks)
+                else:
+                    check_transcripts(task, args.model, checks)
                 record = {'task': task['id'], 'kind': task['kind'], 'arm': 'harness', 'run': 1,
                           'valid': True, 'problems': [], 'cost_usd': 0.5,
                           'tokens': {'total': 60000}, 'duration_s': 60.0, 'final_text': 'stub'}
                 record.update(scored)
                 records.append(record)
+        if args.agent == 'codex':
+            check_codex_config(root, checks)
         print('Scoring defences')
         check_tricks(next(t for t in tasks if t['kind'] == 'review') if any(t['kind'] == 'review' for t in tasks)
                      else tasks[0], harness, root, checks)
         print('Pipeline')
-        check_pipeline(records, tasks, harness, args.model, root, checks)
+        check_pipeline(records, tasks, harness, args.model, args.agent, root, checks)
     finally:
         if args.keep:
             print(f'Kept {root}')

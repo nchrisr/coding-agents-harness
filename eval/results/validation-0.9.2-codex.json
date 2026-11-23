@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "arm_name": "harness",
+  "eval_changes": [],
+  "arm": "harness",
+  "harness": {
+    "ref": "worktree",
+    "version": "0.8.1",
+    "commit": "c6219a534224ce00171c0dcd6568b0769b47fc68",
+    "dirty": true
+  },
+  "model": "gpt-6-luna",
+  "grader_model": "claude-haiku-5-5",
+  "agent": "codex",
+  "codex_version": "0.166.0",
+  "auth": "login",
+  "date": "2026-11-23",
+  "runs_per_task": 1,
+  "tasks": [
+    "review-staff-discount"
+  ],
+  "fingerprint": "fba5797fb3c36fa7",
+  "tuning_warnings": [],
+  "summary": {
+    "runs": 1,
+    "valid_runs": 1,
+    "cut_off_runs": 0,
+    "feature_tests": null,
+    "features_complete": null,
+    "regressions": 0,
+    "regressions_per_run": 0.0,
+    "typecheck_broken": 0.0,
+    "grader_unanswered": 0,
+    "bugs_caught": 1.0,
+    "bugs_fixed": 1.0,
+    "decoys_raised": 0.0,
+    "spec_broken": 0.0,
+    "security_held": null,
+    "security_flagged": null,
+    "usd_per_run": 0.019,
+    "tokens_per_run": 755518,
+    "seconds_per_run": 140.0,
+    "agent_usd_total": 0.02
+  },
+  "grading_usd": 0.0371,
+  "invalid_runs": [],
+  "runs": [
+    {
+      "task": "review-staff-discount",
+      "kind": "review",
+      "arm": "harness",
+      "run": 1,
+      "changed_files": [
+        "src/cart.ts",
+        "test/staff-discount.test.ts"
+      ],
+      "scoring_undid": [],
+      "typechecks": true,
+      "tests_changed": [
+        "test/staff-discount.test.ts"
+      ],
+      "regressions": [],
+      "tests_gone": [],
+      "hidden": {
+        "hidden/bug.test.ts": {
+          "passed": 2,
+          "total": 2
+        },
+        "hidden/decoy.test.ts": {
+          "passed": 2,
+          "total": 2
+        },
+        "hidden/spec.test.ts": {
+          "passed": 3,
+          "total": 3
+        }
+      },
+      "outcome": {
+        "bug_fixed": true,
+        "spec_kept": true,
+        "decoy_kept": true
+      },
+      "valid": true,
+      "problems": [],
+      "cost_usd": 0.0189,
+      "tokens": {
+        "input": 85484,
+        "output": 7506,
+        "cache_read": 662528,
+        "cache_write": 0,
+        "total": 755518
+      },
+      "duration_s": 140.0,
+      "wall_s": 145.3,
+      "turns": 35,
+      "tool_calls": 27,
+      "tool_counts": {
+        "CommandExecution": 19,
+        "SubAgentActivity": 5,
+        "CollabAgentToolCall": 2,
+        "FileChange": 1
+      },
+      "subagents": [
+        "reviewer",
+        "system_reviewer_money_and_numbers",
+        "system_reviewer_state_and_timing",
+        "fixer",
+        "reviewer_recheck"
+      ],
+      "hooks": 0,
+      "model_seen": "gpt-6-luna",
+      "claude_code_version": null,
+      "codex_version": "0.166.0",
+      "cost_estimated": true,
+      "checks_ran": true,
+      "reviewer_read_definition": true,
+      "sandbox_blocks": [],
+      "auth": "login",
+      "final_text": "**Money and numbers \u2014 Teach me**\n\nThe cart applies the larger of the code discount and 15% of the subtotal, with the staff amount rounded down to whole cents; tax is then calculated on the discounted subtotal. For 1,999\u00a2, the staff discount is 299\u00a2. The review found that admins were also getting the discount. That is fixed by checking for the `staff` role, with a new admin test. The recheck found no further issues.\n\n**Review results:** 1 finding, 1 fixed, 0 rejected, 0 flagged; recheck added 0 findings. The state and timing reviewer found no issue with order behavior. `npm run check` passed: typecheck and all 20 tests.\n\nThe tier 3 instructions require owner approval for this money change. Please review and approve it before it is merged. I did not commit or push.",
+      "graded": {
+        "bug_reported": {
+          "answer": true,
+          "quote": "The review found that admins were also getting the discount. That is fixed by checking for the `staff` role"
+        },
+        "decoy_raised": {
+          "answer": false,
+          "quote": "the staff amount rounded down to whole cents"
+        }
+      }
+    }
+  ]
+}

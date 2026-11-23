@@ -2,7 +2,7 @@
 import datetime
 from pathlib import Path
 
-from . import agent, report, score, workspace
+from . import agent, codex_agent, report, score, workspace
 from .common import RESULTS_DIR, EvalError
 
 SCHEMA = 1
@@ -12,10 +12,12 @@ def arm_name(ref: str) -> str:
     return 'no-harness' if ref == workspace.NO_HARNESS else 'harness'
 
 
-def results_path(info: dict) -> Path:
+def results_path(info: dict, agent_name: str = 'claude') -> Path:
+    """Claude Code's files keep their names; another agent's carry its name, so the two never mix."""
+    suffix = '' if agent_name == 'claude' else f'-{agent_name}'
     if info['ref'] == workspace.NO_HARNESS:
-        return RESULTS_DIR / 'no-harness.json'
-    return RESULTS_DIR / f'{info["version"]}.json'
+        return RESULTS_DIR / f'no-harness{suffix}.json'
+    return RESULTS_DIR / f'{info["version"]}{suffix}.json'
 
 
 def start_workspace(task: dict, harness_dir: Path, info: dict, ws: Path, run_dir: Path) -> dict:
@@ -87,7 +89,9 @@ def side_by_side_pairs(records: list, tasks: list, arms: list, out_dir: Path) ->
 
 
 def build_results(arm: dict, records: list, args, grading_usd: float) -> dict:
-    versions = sorted({r.get('claude_code_version') for r in records if r.get('claude_code_version')})
+    agent_name = getattr(args, 'agent', 'claude')
+    version_field = 'codex_version' if agent_name == 'codex' else 'claude_code_version'
+    versions = sorted({r.get(version_field) for r in records if r.get(version_field)})
     return {
         'schema': SCHEMA,
         'arm_name': arm['name'],
@@ -96,8 +100,9 @@ def build_results(arm: dict, records: list, args, grading_usd: float) -> dict:
         'harness': arm['info'],
         'model': args.model,
         'grader_model': args.grader_model,
-        'claude_code_version': versions[0] if len(versions) == 1 else versions,
-        'auth': agent.auth_mode(),
+        'agent': agent_name,
+        version_field: versions[0] if len(versions) == 1 else versions,
+        'auth': codex_agent.auth_mode() if agent_name == 'codex' else agent.auth_mode(),
         'date': datetime.date.today().isoformat(),
         'runs_per_task': args.runs,
         'tasks': sorted({r['task'] for r in records}),
