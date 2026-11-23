@@ -90,6 +90,11 @@ that says nothing specific to this project should be cut or rewritten.
   real incidents; if there are none yet, say so rather than inventing some.
 - **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`** and **`scripts/deps-check.sh`** from
   the templates, with this project's base branch as the default.
+- **`scripts/doc-refs-check.py`** from the template, run by the Stop hook and in CI. It fails when
+  `AGENTS.md` or `docs/` names a file that's gone, a line past a file's end, or a function no longer
+  where the doc says, and when a card's `owns` path no longer exists. Write references it can follow:
+  the function, then its file (`` `buildFigures`, `lib/theses/figures.ts:202` ``). Set `DOC_REFS_SKIP`
+  if the decisions doc lives somewhere else.
 - **Dependency safety** (`dependencies` card and the language packs): the lock file committed, strict
   installs, install scripts off except an approved list (proved by a full build and test run), and a
   weekly scan: on GitHub, Dependabot alerts and security updates (an owner step: free, but it's a
@@ -132,6 +137,9 @@ Don't just say it's done. Check and report each, including what you couldn't che
    trips on the mention.
 3. Run `scripts/hooks-diff.sh` on a sample change that adds one hook command; confirm the command
    appears word for word. Confirm CI, the formatter and the linter pass with the new files.
+   Run `scripts/doc-refs-check.py`. If it fails on docs the project already had, don't fix them here:
+   list them and offer to fix them as a separate task, or to mark lines that are history with
+   `doc-refs: ignore`.
 4. Dry-run `/review-loop` on a throwaway branch: a tiny spec and a small change with one real bug from a
    card's invariants and one decoy that looks wrong but is what the spec asks for. The right system
    reviewer should find the bug and leave the decoy; the fixer should prove it with a failing test and

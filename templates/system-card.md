@@ -6,6 +6,7 @@ title: <Plain name>
 involvement: teach-me
 # Files where this system's invariants live. Glob patterns, matched against changed paths (* also
 # matches /). List those files, not whole folders, unless every file in the folder is in scope.
+# A plain path must exist (scripts/doc-refs-check.py fails if it doesn't); a glob may match nothing yet.
 owns:
   - '<path/or/glob>'
 # Tripwires: patterns in a change's ADDED lines that pull it up to teach-me, wherever they appear.
