@@ -5,11 +5,12 @@ results, comparison and side-by-side steps run end to end on stub data."""
 import argparse
 import json
 import shutil
+import subprocess
 import tempfile
 from pathlib import Path
 
 from . import codex_agent, codex_transcript, grade, report, score, transcript, workspace
-from .common import EvalError, copy_tree, load_tasks, write_json
+from .common import REPO_ROOT, EvalError, copy_tree, load_tasks, write_json
 from .pipeline import build_results, prepare_arm, score_run, side_by_side_pairs, start_workspace
 
 
@@ -144,6 +145,33 @@ def check_codex_config(root: Path, checks: Checks) -> None:
     config.write_text(before + 'notify = ["sh"]\n')
     flagged = codex_agent.config_after(config, before, ws) != []
     checks.check(undone and flagged, '[codex] Codex\'s own trust entry is undone; any other config change is flagged')
+
+
+def check_deps_scan(root: Path, checks: Checks) -> None:
+    """deps-check.sh finds a known-vulnerable dependency when run from an agent's worktree nested under
+    a folder the project ignores, where walking the folder would scan nothing."""
+    if not shutil.which('osv-scanner'):
+        print('  skip deps-check.sh in a worktree: osv-scanner is not installed')
+        return
+    repo = root / 'deps-project'
+    repo.mkdir()
+    (repo / '.gitignore').write_text('.claude/worktrees/\n')
+    (repo / 'package-lock.json').write_text(json.dumps({
+        'name': 'x', 'version': '1.0.0', 'lockfileVersion': 3, 'requires': True,
+        'packages': {'': {'name': 'x', 'version': '1.0.0', 'dependencies': {'lodash': '4.17.20'}},
+                     'node_modules/lodash': {'version': '4.17.20'}}}))
+    git = ['git', '-c', 'user.name=eval', '-c', 'user.email=eval@example.invalid']
+    for cmd in (['init', '-q'], ['add', '-A'], ['commit', '-qm', 'start'],
+                ['worktree', 'add', '-q', '.claude/worktrees/agent']):
+        subprocess.run(git + cmd, cwd=repo, check=True, capture_output=True)
+    out = subprocess.run(['bash', str(REPO_ROOT / 'templates/scripts/deps-check.sh'), 'HEAD'],
+                         cwd=repo / '.claude/worktrees/agent', capture_output=True, text=True).stdout
+    scan = out.split('== Known vulnerabilities', 1)[-1]
+    if 'NOT RUN' in scan and '(exit 127)' in scan:
+        print('  skip deps-check.sh in a worktree: the scanner failed, probably offline')
+        return
+    checks.check('lodash' in scan and 'GHSA-' in scan,
+                 'deps-check.sh run from a worktree under an ignored folder finds the vulnerable lodash')
 
 
 def check_start(task: dict, ws: Path, run_dir: Path, checks: Checks) -> None:
@@ -303,6 +331,8 @@ def main(args) -> int:
         print('Scoring defences')
         check_tricks(next(t for t in tasks if t['kind'] == 'review') if any(t['kind'] == 'review' for t in tasks)
                      else tasks[0], harness, root, checks)
+        print('Scripts')
+        check_deps_scan(root, checks)
         print('Pipeline')
         check_pipeline(records, tasks, harness, args.model, args.agent, root, checks)
     finally:
