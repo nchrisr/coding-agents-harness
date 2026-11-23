@@ -2,6 +2,14 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.6.0 — 2026-11-23
+- Optional code index: `packs/tools/codegraph.md` and `scripts/cg`. Setup asks the owner, for a
+  project of a few hundred source files or more. CodeGraph is installed as a pinned dev dependency
+  with install scripts off, and called only through `scripts/cg`. That allows four small commands
+  (where a symbol is, its callers, its callees, what a change affects), answering with file:line, and
+  turns off telemetry, update checks and the background helper. Never `codegraph install` or its MCP
+  server. The pack lists everything it brings in. Projects without it are unchanged.
+
 ## 0.5.2 — 2026-11-23
 - New `scripts/blast-radius.sh`: the top-level functions, classes and constants a change touched, and
   every other file that imports and uses each one, as file:line (names only, no source). The review
