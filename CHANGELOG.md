@@ -2,6 +2,16 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.7.0 — 2026-11-23
+Four ideas borrowed from Harness² (Google Research's recursive agent harnessing), applied by hand and
+reviewed, not automated:
+- `finding.md`: sort a lesson first. How the agent works is a harness finding; what an expert in the
+  subject knows stays in the project.
+- `evaluate.md`: try two or three variations of a proposed rule on the same task and combine what
+  helped; when there's no reliable answer key, compare outputs side by side under random ids.
+- Setup: a procedure needed only in one situation becomes a command or skill that loads on demand,
+  with one line in `AGENTS.md` saying when to use it.
+
 ## 0.6.2 — 2026-11-23
 - README: a diagram of one harness serving many projects (setup and upgrades out, findings back, the
   locked trust rule), with the per-change loop inside each project below it, and a "Works with" grid
