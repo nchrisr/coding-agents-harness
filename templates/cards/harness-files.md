@@ -7,7 +7,7 @@ owns:
   - 'CLAUDE.md'
   - '*/AGENTS.md'
   - '.claude/*'
-  - '<other agents project folders, e.g. .codex/*>'
+  - '<other agents project folders, e.g. .gemini/*, .codex/*>'
   - 'docs/systems/*'
   - 'scripts/systems-touched.sh'
   - '.harness-version'
@@ -23,6 +23,7 @@ watch:
   - '"hooks"'
   - '"(pre|post)?install"|"prepare"|"prepublish(Only)?"|"postpack"'
   - 'core\.hooksPath'
+  - '"fileName"'
 ---
 
 # Harness files
@@ -45,6 +46,8 @@ changes what every future session does.
 - Any change to `hooks` in a settings file, a new allowlist entry, or a new command in a hook script.
 - A new or changed git hook, or a package install script (`preinstall`, `install`, `postinstall`,
   `prepare`, `prepublish`), or a change to git's `core.hooksPath`.
+- A change to which instructions files an agent reads (Gemini CLI's `context.fileName`). Dropping
+  `GEMINI.md` from it also stops Gemini reading the owner's pointer to the trust rule.
 
 ## How it breaks
 - <the project's own incidents>

@@ -2,6 +2,8 @@
 # Runs the fast checks when a turn ends with code changed. A failure exits 2, which makes the agent
 # fix it before finishing. It runs at the end of a turn rather than after each edit, because a
 # multi-file change is often broken halfway through. Slow checks run before committing.
+# Claude Code runs it as a Stop hook, Gemini CLI as an AfterAgent hook: both pass stop_hook_active
+# and read exit 2 as "keep working". Messages go to stderr only; Gemini reads stdout as JSON.
 
 input=$(cat)
 
@@ -10,7 +12,7 @@ if [ "$(printf '%s' "$input" | jq -r '.stop_hook_active // false')" = "true" ]; 
   exit 0
 fi
 
-cd "$CLAUDE_PROJECT_DIR" || exit 0
+cd "${CLAUDE_PROJECT_DIR:-$GEMINI_PROJECT_DIR}" || exit 0
 
 # ADAPT: skip if dependencies aren't installed, as in a new worktree.
 

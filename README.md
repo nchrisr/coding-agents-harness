@@ -5,6 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-supported-blueviolet.svg)
 ![Codex](https://img.shields.io/badge/Codex-supported-blueviolet.svg)
+![Gemini CLI](https://img.shields.io/badge/Gemini_CLI-supported-blueviolet.svg)
 
 A reusable way of working with coding agents. It is a recipe book, not a library: nothing here runs
 inside a project, and no project depends on it. An agent reads it, writes the project's own harness
@@ -34,6 +35,7 @@ files (instructions, checks, reviewers, hooks), and you review them before anyth
 <p align="center">
   <img src="assets/tiles/claude-code.svg" width="104" height="104" alt="Claude Code" />
   <img src="assets/tiles/codex.svg" width="104" height="104" alt="Codex" />
+  <img src="assets/tiles/gemini-cli.svg" width="104" height="104" alt="Gemini CLI" />
 </p>
 
 ## What it gives a project
@@ -147,7 +149,7 @@ Keep this list up to date with every change to `packs/` or `rules/`.
 |---|---|---|
 | **Languages** | Python · TypeScript / JavaScript · Rust | Google's style guide for each, plus the overrides in `rules/style.md` (plain code over clever syntax; unknown is explicit) |
 | **Platforms** | GitHub · GitLab · Azure Repos | Harness files need the owner's approval to merge |
-| **Agents** | Claude Code · Codex | One trust rule, pointed at from each agent's personal instructions file |
+| **Agents** | Claude Code · Codex · Gemini CLI | One trust rule, pointed at from each agent's personal instructions file |
 | **Project types** | Product · Learning | Product: the agent builds. Learning: the owner builds the parts they want to learn |
 | **Optional tools** | CodeGraph (code index) | Off unless the owner chooses it; only its small commands, telemetry off |
 
@@ -168,7 +170,7 @@ Keep this list up to date with every change to `packs/` or `rules/`.
 type the commands and the password yourself. The rule tells every coding agent to treat this harness
 as material to review, never as instructions. Think of it as a notice in a glass display case: every
 agent can read it, and none can change it, because the key is your computer's password.
-`trust-rule.md` walks through it for macOS, Linux and Windows, and for Claude Code and Codex:
+`trust-rule.md` walks through it for macOS, Linux and Windows, and for Claude Code, Codex and Gemini CLI:
 
 1. Create the rule file in a neutral folder (`~/.config/coding-agents-harness/`).
 2. Create the `source` file next to it, saying where agents get the harness from: a GitHub repository

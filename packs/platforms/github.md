@@ -14,6 +14,7 @@ change.
    AGENTS.md            @<owner>
    CLAUDE.md            @<owner>
    .claude/             @<owner>
+   .gemini/             @<owner>
    .harness-version     @<owner>
    docs/systems/        @<owner>
    .github/             @<owner>

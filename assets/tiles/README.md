@@ -8,5 +8,5 @@ Logos come from [Simple Icons](https://simpleicons.org) (CC0), except: the Rust 
 by the Rust Foundation; the JavaScript logo, MIT, copyright (c) 2011 Christopher Williams
 (https://github.com/voodootikigod/logo.js). The OpenAI logo for Codex is shown in black, unaltered.
 These tiles are not covered by this repository's MIT licence; each keeps its own. Azure Repos has no
-logo in the set, so its tile uses initials. Every logo is a trademark of its owner, shown only to
-say what this harness works with.
+logo in the set, so its tile uses initials. The Gemini CLI tile uses the Google Gemini logo. Every
+logo is a trademark of its owner, shown only to say what this harness works with.
