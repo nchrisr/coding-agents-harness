@@ -1,0 +1,58 @@
+name: Harness finding
+description: Something a coding agent got wrong that the harness should have caught.
+title: "Finding: "
+labels: ["finding"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The shape is in `finding.md`. **Strip your project out:** no code, names, file paths,
+        customers, numbers or incidents that identify it. Never describe an unfixed security hole
+        here; see `SECURITY.md`.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: The bug, slowdown or risky move, in general terms.
+    validations:
+      required: true
+  - type: textarea
+    id: why-missed
+    attributes:
+      label: Why the harness missed it
+      description: Which stage should have caught it, and why it didn't (the wrong system, no card, no check, a rule in prose a tool could have enforced).
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of lesson is it?
+      description: "`finding.md`: how the agent works belongs in the harness; what an expert in your subject knows belongs in your project."
+      options:
+        - How the agent works (checks, searches, plans, reviews, verifies)
+        - What an expert in the subject knows
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-rule
+    attributes:
+      label: Proposed rule
+      description: The general rule, written so it fits any project.
+  - type: input
+    id: where
+    attributes:
+      label: Where it goes
+      description: A harness file (a card template, a language pack, a working rule...), if you know.
+  - type: textarea
+    id: checkable
+    attributes:
+      label: Can a program check it?
+      description: Yes (which linter, test or hook) or no, and why.
+  - type: checkboxes
+    id: stripped
+    attributes:
+      label: Before you send
+      options:
+        - label: Nothing in this issue identifies my project, and it describes no unfixed security hole.
+          required: true

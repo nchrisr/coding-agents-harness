@@ -211,9 +211,14 @@ harness that installs its own safety rule could install a weaker one.
 | `packs/tools/` | Optional tools a project can choose, set up safely (a code index). |
 | `templates/` | Starting points for agents, commands, hooks, scripts and system cards. |
 | `CHANGELOG.md` | What changed in each version, so an upgrade can say what's new. |
+| `CONTRIBUTING.md` | How to send a finding or a change. |
+| `SECURITY.md` | How to report a security problem privately. |
 | `LICENSE` | MIT. |
 
 ## Changing this repo
+
+Send a finding with the issue form, or a change as a pull request: `CONTRIBUTING.md`. Security
+problems go privately: `SECURITY.md`.
 
 Every change goes through a pull request the owner reviews line by line; nothing merges to `main`
 any other way.
