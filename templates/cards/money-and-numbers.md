@@ -3,9 +3,9 @@ name: money-and-numbers
 title: Money and numbers
 involvement: teach-me
 owns:
-  - '<valuation, pricing, totals, formatting of amounts>'
+  - '<pricing, totals, formatting of amounts>'
 watch:
-  - '<the function that creates a figure, e.g. calculate\w*Value\(>'
+  - '<the function that creates a figure, e.g. calculate\w*Total\(>'
 ---
 
 # Money and numbers

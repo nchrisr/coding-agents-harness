@@ -104,7 +104,7 @@ that says nothing specific to this project should be cut or rewritten.
 - **`scripts/doc-refs-check.py`** from the template, run by the Stop hook and in CI. It fails when
   `AGENTS.md` or `docs/` names a file that's gone, a line past a file's end, or a function no longer
   where the doc says, and when a card's `owns` path no longer exists. Write references it can follow:
-  the function, then its file (`` `buildFigures`, `lib/theses/figures.ts:202` ``). Set `DOC_REFS_SKIP`
+  the function, then its file (`` `buildInvoice`, `lib/billing/invoice.ts:202` ``). Set `DOC_REFS_SKIP`
   if the decisions doc lives somewhere else.
 - **Dependency safety** (`dependencies` card and the language packs): the lock file committed, strict
   installs, install scripts off except an approved list (proved by a full build and test run), and a

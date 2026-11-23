@@ -2,6 +2,12 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.7.1 — 2026-11-23
+- Before the repository goes public: the doc-reference examples in `setup.md` and
+  `scripts/doc-refs-check.py`, and the money card's placeholders, use made-up names. The Codex tile
+  uses the OpenAI logo in black, and the README says the logo tiles keep their own licences. No
+  change for projects.
+
 ## 0.7.0 — 2026-11-23
 Four ideas borrowed from Harness² (Google Research's recursive agent harnessing), applied by hand and
 reviewed, not automated:

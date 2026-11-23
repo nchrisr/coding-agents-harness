@@ -11,7 +11,7 @@ tiles = [  # file, label, simple-icons slug or None, brand colour
     ('gitlab', 'GitLab', 'gitlab', 'FC6D26'),
     ('azure-repos', 'Azure Repos', None, '0078D4'),
     ('claude-code', 'Claude Code', 'claude', 'D97757'),
-    ('codex', 'Codex', 'openai', '412991'),
+    ('codex', 'Codex', 'openai', '000000'),
 ]
 FONT = "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 for name, label, slug, colour in tiles:

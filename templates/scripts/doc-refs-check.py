@@ -2,11 +2,11 @@
 """Fails when the docs agents rely on point at code that is no longer there.
 
 Checks, in AGENTS.md, CLAUDE.md and docs/**/*.md:
-  1. Every file or folder a doc names in backticks exists: `lib/auth/viewer.ts`, `lib/tenant/`,
-     or a bare file name that names exactly one file: `holding-key.ts`.
-  2. A line reference is inside the file: `market-value.ts:55` or `:55-70`.
+  1. Every file or folder a doc names in backticks exists: `lib/auth/session.ts`, `lib/billing/`,
+     or a bare file name that names exactly one file: `invoice-key.ts`.
+  2. A line reference is inside the file: `order-total.ts:55` or `:55-70`.
   3. A symbol written just before a file reference is in that file, and on that line if the doc gives
-     one: "`buildFigures`, `lib/theses/figures.ts:202`". When it has moved, the new line is given.
+     one: "`buildInvoice`, `lib/billing/invoice.ts:202`". When it has moved, the new line is given.
   4. Relative Markdown links point at files that exist.
   5. Every `owns` pattern in a system card (docs/systems/*.md) matches at least one file, so the
      card's reviewer still wakes for its files.

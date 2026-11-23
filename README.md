@@ -221,4 +221,5 @@ project's `AGENTS.md` that names the harness (the next upgrade can do that).
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See `LICENSE`. The logo tiles in `assets/tiles/` keep their own licences and are trademarks of
+their owners (`assets/tiles/README.md`).
