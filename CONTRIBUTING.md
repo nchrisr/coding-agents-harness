@@ -14,10 +14,11 @@ Never post an unfixed security hole in an issue. See `SECURITY.md`.
 
 ## Change the harness
 Read "Changing this repo" in the README first. In short:
+- Pull requests go to `develop`, not `main`: `main` holds released versions only.
 - One concern per pull request, starting from a finding.
 - Prove it: a new check runs on made-up cases that must pass and must fail; a new tool or rule is
   tested as `evaluate.md` says. A change to templates, rules or packs runs the evaluation
-  (`eval/README.md`) against `main` on your own account, and the comparison goes in the pull request.
+  (`eval/README.md`) against `develop` on your own account, and the comparison goes in the pull request.
   The owner reruns it before merging rather than trusting the numbers.
 - Bump `VERSION` and add a `CHANGELOG.md` entry written for the projects that will upgrade.
 - Flag anything sensitive at the top: the trust rule, hooks, allowlists, anything that runs

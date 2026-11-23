@@ -31,13 +31,14 @@ transcript checks reject a run with a permission denial or without the harness l
 any change to `eval/`.
 
 ```bash
-python3 eval/run.py run --compare-to origin/main
+python3 eval/run.py run --compare-to origin/develop
 ```
-The way to judge a change: this checkout's harness and `main`'s, interleaved in one session with the
-same model and Claude Code version, 2 runs per task each: 40 runs, roughly $50 to $60 at API prices
-(40 runs at about $1.40), plus under a dollar of grading. It prints the comparison and keeps it, with each arm's results file
-(`results-<arm>.json`), the transcripts and each run's diff, in `eval/runs/<time>/`, which git
-ignores. **Paste `comparison.md` into the pull request.**
+The way to judge a change: this checkout's harness and `develop`'s (where it would merge),
+interleaved in one session with the same model and Claude Code version, 2 runs per task each: 40
+runs, roughly $50 to $60 at API prices (40 runs at about $1.40), plus under a dollar of grading. It
+prints the comparison and keeps it, with each arm's results file (`results-<arm>.json`), the
+transcripts and each run's diff, in `eval/runs/<time>/`, which git ignores. **Paste `comparison.md`
+into the pull request.**
 
 ```bash
 python3 eval/run.py run
@@ -52,7 +53,7 @@ the task set and the runs per task match; the comparison says when they don't.
 against one baseline in the same session:
 
 ```bash
-python3 eval/run.py run --harness variation-a --compare-to origin/main --variants variation-b variation-c
+python3 eval/run.py run --harness variation-a --compare-to origin/develop --variants variation-b variation-c
 ```
 Each arm gets its own comparison against the baseline. Combine what helped from each into the version
 that goes in; keep the losing variations and why they lost in the finding.
@@ -91,7 +92,7 @@ isolation run it in a container.
 
 ```bash
 python3 eval/run.py dry-run --agent codex
-python3 eval/run.py run --agent codex --compare-to origin/main
+python3 eval/run.py run --agent codex --compare-to origin/develop
 ```
 Claude Code stays the default; `--agent codex` runs the same tasks with `codex exec`, scored the
 same way, so the two agents' results line up task by task. Results go to

@@ -118,7 +118,7 @@ asked:
 
 ```bash
 python3 eval/run.py dry-run                       # the whole pipeline, no model calls
-python3 eval/run.py run --compare-to origin/main  # this branch's harness against main's
+python3 eval/run.py run --compare-to origin/develop  # this branch's harness against develop's
 ```
 
 `eval/README.md` says what it measures and how to read it. The numbers advise; the owner still
@@ -126,8 +126,9 @@ reviews and merges.
 
 ## Quick start
 
-1. **Clone this repo** anywhere on your machine:
-   `git clone <this repo's URL> ~/coding-agents-harness`
+1. **Clone this repo's `main` branch** anywhere on your machine:
+   `git clone -b main <this repo's URL> ~/coding-agents-harness`
+   `main` holds released versions; `develop` is work in progress.
 2. **Open your project** (new or existing) in your coding agent.
 3. **Say:** "Set up this project with the harness at `~/coding-agents-harness/setup.md`."
    For a new project, describe the idea in a few sentences first.
@@ -220,16 +221,18 @@ harness that installs its own safety rule could install a weaker one.
 Send a finding with the issue form, or a change as a pull request: `CONTRIBUTING.md`. Security
 problems go privately: `SECURITY.md`.
 
-Every change goes through a pull request the owner reviews line by line; nothing merges to `main`
-any other way.
+Every change goes through a pull request the owner reviews line by line; nothing merges any other
+way. **Pull requests go to `develop`.** `main` holds released versions only: the owner merges
+`develop` into `main` to release, and projects read the harness from `main` (`source.md`), so they
+never pick up work in progress.
 
 1. **Start from a finding** (`finding.md`), with the project stripped out: no code, names, file paths,
    customers, secrets or incidents that identify a project. If the lesson can't be stated without
    them, it belongs in that project, not here.
-2. **One concern per branch.** Name the branch after the change.
+2. **One concern per branch,** cut from `develop`. Name the branch after the change.
 3. **Prove it.** A new check runs on a real project and on made-up cases that must pass and must fail.
    A new tool is tested as `evaluate.md` describes, with its numbers in the pull request. A change to
-   templates, rules or packs runs `python3 eval/run.py run --compare-to origin/main` and puts the
+   templates, rules or packs runs `python3 eval/run.py run --compare-to origin/develop` and puts the
    comparison in the pull request; the owner reruns it before merging.
 4. **Bump `VERSION` and add a `CHANGELOG.md` entry**, written for the projects that will upgrade:
    what changes for them, or "no change for projects".
