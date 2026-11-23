@@ -10,6 +10,11 @@ Each upgrade reads the entries after the version a project was set up from.
   turns off telemetry, update checks and the background helper. Never `codegraph install` or its MCP
   server. The pack lists everything it brings in. Projects without it are unchanged.
 
+## 0.5.3 — 2026-11-23
+- `AGENTS.md` has a 250-line budget, since agents read it on every turn: detail goes in `docs/` with a
+  one-line pointer, and instructions for an optional tool are conditional. The Stop hook enforces it
+  only on a turn that changed `AGENTS.md` (`AGENTS_MD_BUDGET` to change it).
+
 ## 0.5.2 — 2026-11-23
 - New `scripts/blast-radius.sh`: the top-level functions, classes and constants a change touched, and
   every other file that imports and uses each one, as file:line (names only, no source). The review
