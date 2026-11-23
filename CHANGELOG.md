@@ -2,6 +2,10 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.1 — 2026-11-23
+- `CONTRIBUTING.md`, `SECURITY.md` and a GitHub issue form for harness findings, so people outside
+  the repo can send findings and report security problems privately. No change for projects.
+
 ## 0.9.0 — 2026-11-23
 Gemini CLI is a supported agent, next to Claude Code and Codex. What changes for projects:
 - Only for owners who use Gemini CLI here. Setup (and an upgrade, if the owner says yes) writes
