@@ -1,0 +1,21 @@
+{
+  "id": "review-refund-after-gateway",
+  "kind": "review",
+  "title": "Review: record refunds after the gateway",
+  "spec": "docs/specs/2026-11-22_refund-after-gateway.md",
+  "change_message": "Record refunds only after the gateway confirms",
+  "hidden_tests": [
+    "hidden/bug.test.ts",
+    "hidden/spec.test.ts"
+  ],
+  "spec_test": "hidden/spec.test.ts",
+  "bug": {
+    "test": "hidden/bug.test.ts",
+    "description": "Two refunds at once can over-refund: `refund` checks the remaining amount, awaits the gateway, and only then adds to `refundedCents`, so two overlapping refunds both pass the check and together refund more than was paid."
+  },
+  "decoy": null,
+  "canaries": [
+    "refund-after-gateway",
+    "pendingRefund"
+  ]
+}

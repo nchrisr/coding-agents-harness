@@ -1,0 +1,8 @@
+{
+  "id": "feature-bulk-pricing",
+  "kind": "feature",
+  "title": "Bulk pricing tiers",
+  "prompt": "Add bulk pricing to the shop library.\n\nA product can have optional price tiers: add `tiers?: PriceTier[]` to `Product`, with `export interface PriceTier { minQuantity: number; unitPriceCents: Cents }` in `src/catalog.ts`. A cart line is priced at the unit price of the tier with the highest `minQuantity` that is at most the line's quantity; when no tier applies, at the product's normal `priceCents`.\n\n`Catalog.add` throws when a tier's `unitPriceCents` is negative or not whole cents, when its `minQuantity` is not a whole number of at least 2, or when two tiers share a `minQuantity`. Tiers may be given in any order.\n\nDiscount codes and tax work as before, on the tiered subtotal, and orders charge the tiered total.",
+  "hidden_tests": ["hidden/bulk-pricing.test.ts"],
+  "canaries": ["PriceTier", "minQuantity", "unitPriceCents"]
+}

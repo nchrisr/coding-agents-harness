@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(npm run check:*)",
+      "Bash(npm test:*)",
+      "Bash(npx tsc --noEmit:*)",
+      "Bash(npx vitest run:*)",
+      "Bash(scripts/systems-touched.sh:*)",
+      "Bash(scripts/blast-radius.sh:*)",
+      "Bash(scripts/hooks-diff.sh:*)",
+      "Bash(scripts/deps-check.sh:*)",
+      "Bash(python3 scripts/doc-refs-check.py:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-on-stop.sh",
+            "timeout": 180,
+            "statusMessage": "Running the checks"
+          }
+        ]
+      }
+    ]
+  }
+}

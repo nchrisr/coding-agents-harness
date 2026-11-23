@@ -1,0 +1,8 @@
+{
+  "id": "feature-orders-csv",
+  "kind": "feature",
+  "title": "Orders CSV export",
+  "prompt": "Add a CSV export of orders.\n\nAdd `exportOrdersCsv(store: OrderStore, user: User): string` in a new file `src/export.ts`, and export it from `src/index.ts`. It returns a header row `order_id,customer_id,placed_at,items,total,refunded`, then one row per order the user may see: exactly the orders `store.listFor(user)` returns, in the same order.\n\n- `placed_at` is the order's `placedAt` as ISO 8601 (`toISOString()`).\n- `items` lists the lines as `SKU x quantity`, joined with `; ` (for example `MUG x 2; PEN x 1`).\n- `total` and `refunded` are dollars with two decimals and no currency sign (`27.00`, `0.00`).\n- A field containing a comma, a double quote or a newline is wrapped in double quotes, with each double quote inside it doubled.\n- Every row, including the last, ends with `\\n`.",
+  "hidden_tests": ["hidden/orders-csv.test.ts"],
+  "canaries": ["exportOrdersCsv", "order_id,customer_id"]
+}

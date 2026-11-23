@@ -1,0 +1,28 @@
+{
+  "_about": "Harness templates copied into the practice app at build time, from the harness version being evaluated. Each [from, to] pair is a literal replacement that must match, so a template change that moves a placeholder fails the build instead of passing silently.",
+  "project": "a small TypeScript shop library (catalog and stock, carts, discount codes, orders, payments and refunds)",
+  "files": [
+    {"template": "templates/agents/reviewer.md", "dest": ".claude/agents/reviewer.md",
+     "replace": [["<one sentence about the project>", "{project}"], ["<the record of past security fixes>", "`docs/decisions.md`"]]},
+    {"template": "templates/agents/system-reviewer.md", "dest": ".claude/agents/system-reviewer.md", "replace": []},
+    {"template": "templates/agents/fixer.md", "dest": ".claude/agents/fixer.md",
+     "replace": [["<one sentence about the project>", "{project}"], ["<the record of past security fixes>", "`docs/decisions.md`"],
+                 ["<the project's fast checks: typecheck, tests, lint>", "`npm run check` (typecheck and tests; there is no linter)"]]},
+    {"template": "templates/agents/spec-critic.md", "dest": ".claude/agents/spec-critic.md",
+     "replace": [["<one sentence about the project>", "{project}"]]},
+    {"template": "templates/commands/review-loop.md", "dest": ".claude/commands/review-loop.md", "replace": []},
+    {"template": "templates/commands/spec.md", "dest": ".claude/commands/spec.md", "replace": []},
+    {"template": "templates/hooks/check-on-stop.sh", "dest": ".claude/hooks/check-on-stop.sh", "mode": "755",
+     "replace": [["# ADAPT: skip if dependencies aren't installed, as in a new worktree.", "[ -d node_modules ] || exit 0"],
+                 ["npm test 2>&1", "npm run check 2>&1"]]},
+    {"template": "templates/scripts/systems-touched.sh", "dest": "scripts/systems-touched.sh", "mode": "755",
+     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+    {"template": "templates/scripts/blast-radius.sh", "dest": "scripts/blast-radius.sh", "mode": "755",
+     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+    {"template": "templates/scripts/hooks-diff.sh", "dest": "scripts/hooks-diff.sh", "mode": "755",
+     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+    {"template": "templates/scripts/deps-check.sh", "dest": "scripts/deps-check.sh", "mode": "755",
+     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+    {"template": "templates/scripts/doc-refs-check.py", "dest": "scripts/doc-refs-check.py", "mode": "755", "replace": []}
+  ]
+}
