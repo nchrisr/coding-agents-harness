@@ -28,6 +28,16 @@ if [ -n "$changed" ] && [ -f scripts/doc-refs-check.py ]; then
   fi
 fi
 
+# AGENTS.md is read on every turn of every session, so it has a size budget. Checked only when this
+# turn changed it, so it never blocks unrelated work.
+budget="${AGENTS_MD_BUDGET:-250}"
+if printf '%s\n' "$changed" | grep -qx 'AGENTS.md' && [ "$(wc -l < AGENTS.md)" -gt "$budget" ]; then
+  printf 'AGENTS.md is %s lines, over its %s-line budget. Move detail into docs/ and leave a\n' \
+    "$(wc -l < AGENTS.md | tr -d ' ')" "$budget" >&2
+  printf 'one-line pointer saying when to read it.\n' >&2
+  exit 2
+fi
+
 # ADAPT: the language pack's trigger pattern. Docs-only turns skip the checks.
 if ! printf '%s\n' "$changed" | grep -qE '\.(ts|tsx|json)$'; then
   exit 0
