@@ -2,6 +2,14 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.2 — 2026-11-23
+- `eval/` runs Codex too: `python3 eval/run.py run --agent codex`. Claude Code stays the default. The
+  same tasks and scoring, a Codex launcher (`codex exec` in a clean environment and its own sandbox,
+  no web, a dollar cap the runner keeps from the token counts), and a transcript reader that proves
+  `AGENTS.md` loaded and the review loop started its reviewer. Codex reports tokens, not dollars, so
+  its costs are estimates from a price table. Results go in `eval/results/<VERSION>-codex.json`. No
+  change for projects.
+
 ## 0.9.1 — 2026-11-23
 - `CONTRIBUTING.md`, `SECURITY.md` and a GitHub issue form for harness findings, so people outside
   the repo can send findings and report security problems privately. No change for projects.
