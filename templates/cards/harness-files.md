@@ -16,6 +16,7 @@ owns:
   - '.githooks/*'
   - '.pre-commit-config.y*ml'
   - 'scripts/hooks-diff.sh'
+  - 'scripts/doc-refs-check.py'
 watch:
   - '"hooks"'
   - '"(pre|post)?install"|"prepare"|"prepublish(Only)?"|"postpack"'
@@ -50,6 +51,7 @@ changes what every future session does.
 
 ## Checks
 - **Programs:** `scripts/systems-touched.sh` wakes this card for any change to these files.
+  `scripts/doc-refs-check.py` fails if an `owns` path here no longer exists.
   `scripts/hooks-diff.sh` lists every command that runs on its own, before and after, word for word.
 - **Reviewer:** for each command in the hooks diff, answer yes or no, and flag every yes to the owner:
   - Does it download anything, or reach the network (`curl`, `wget`, `npx <unpinned package>`, a URL)?

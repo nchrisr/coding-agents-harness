@@ -18,6 +18,16 @@ changed=$(
   git diff --name-only HEAD 2>/dev/null
   git ls-files --others --exclude-standard 2>/dev/null
 )
+# Docs can break from either side: a renamed function breaks a doc, and so does a doc edit. Fast, so
+# it runs on any change. Warnings don't stop the turn; broken references do.
+if [ -n "$changed" ] && [ -f scripts/doc-refs-check.py ]; then
+  if ! output=$(python3 scripts/doc-refs-check.py 2>&1); then
+    printf 'A doc points at code that has moved or gone. Fix the doc before finishing:\n%s\n' \
+      "$output" | tail -40 >&2
+    exit 2
+  fi
+fi
+
 # ADAPT: the language pack's trigger pattern. Docs-only turns skip the checks.
 if ! printf '%s\n' "$changed" | grep -qE '\.(ts|tsx|json)$'; then
   exit 0

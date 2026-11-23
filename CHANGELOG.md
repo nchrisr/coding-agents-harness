@@ -2,6 +2,13 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.5.0 — 2026-11-23
+- New `scripts/doc-refs-check.py`, run by the Stop hook and in CI. It fails when `AGENTS.md` or
+  `docs/` names a file that's gone, a line past a file's end, or a function no longer where the doc
+  says (and gives the new line), and when a system card's `owns` path no longer exists, which would
+  stop that card's reviewer waking. Specs, the decisions doc, the changelog, ignored files and lines
+  marked `doc-refs: ignore` are skipped. Setup lists existing breaks and never fixes them itself.
+
 ## 0.4.0 — 2026-11-22
 Dependency safety:
 - New starter card `dependencies` (Teach me): lock files committed and installs strict, no known high
