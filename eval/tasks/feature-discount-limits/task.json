@@ -1,0 +1,8 @@
+{
+  "id": "feature-discount-limits",
+  "kind": "feature",
+  "title": "Discount expiry and usage limits",
+  "prompt": "Discount codes need an expiry date and a usage limit.\n\nAdd optional `expiresAt?: Date` and `maxUses?: number` to both kinds of `Discount`. `OrderStore.place` throws, and changes nothing (no stock taken, no charge, no use counted), when the discount has expired (it has expired when `now >= expiresAt`) or has already been used `maxUses` times.\n\nA use counts only when an order is placed successfully: a declined charge doesn't use it up. Customers sometimes press the order button twice, so two orders placed at the same moment must never use a code more times than `maxUses` allows.\n\nAdd `OrderStore.timesUsed(code: string): number`, matching codes without regard to case, as `DiscountBook` does. A code that has never been used gives 0.",
+  "hidden_tests": ["hidden/discount-limits.test.ts"],
+  "canaries": ["maxUses", "expiresAt", "timesUsed"]
+}

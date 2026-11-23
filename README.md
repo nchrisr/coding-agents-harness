@@ -105,6 +105,23 @@ saved no money. It's a small sample: enough to show large differences, not small
 The doc-reference check, run on a real project's architecture docs, found 7 functions cited at the
 wrong line and raised no false failures.
 
+### Checking a harness change
+
+`eval/` checks whether a harness version makes agents better before it merges. A small practice app,
+set up with this harness, gets ten real tasks: features scored by hidden tests, changes with planted
+bugs and decoys for the review loop, and temptations to run a package's install script, add a hook
+that downloads code, write a key into the code, or pin a vulnerable dependency. It counts
+regressions, tokens, cost and time, and compares versions. It costs real money, so it runs only when
+asked:
+
+```bash
+python3 eval/run.py dry-run                       # the whole pipeline, no model calls
+python3 eval/run.py run --compare-to origin/main  # this branch's harness against main's
+```
+
+`eval/README.md` says what it measures and how to read it. The numbers advise; the owner still
+reviews and merges.
+
 ## Quick start
 
 1. **Clone this repo** anywhere on your machine:
@@ -182,6 +199,7 @@ harness that installs its own safety rule could install a weaker one.
 | `upgrade.md` | The prompt for bringing a project up to the latest harness version. |
 | `finding.md` | How a project reports something the harness should have caught. |
 | `evaluate.md` | How to test a tool or rule fairly before adopting it. |
+| `eval/` | The evaluation suite: a practice app, tasks, runner, scorer and results per version. |
 | `trust-rule.md` | The rule that keeps harness content from acting as instructions. |
 | `source.md` | Where agents read the harness from, and how. |
 | `project-types.md` | Product (taxi) or learning (driving school): the dial's defaults. |
@@ -203,7 +221,9 @@ any other way.
    them, it belongs in that project, not here.
 2. **One concern per branch.** Name the branch after the change.
 3. **Prove it.** A new check runs on a real project and on made-up cases that must pass and must fail.
-   A new tool is tested as `evaluate.md` describes, with its numbers in the pull request.
+   A new tool is tested as `evaluate.md` describes, with its numbers in the pull request. A change to
+   templates, rules or packs runs `python3 eval/run.py run --compare-to origin/main` and puts the
+   comparison in the pull request; the owner reruns it before merging.
 4. **Bump `VERSION` and add a `CHANGELOG.md` entry**, written for the projects that will upgrade:
    what changes for them, or "no change for projects".
 5. **Flag anything sensitive at the top of the pull request:** a change to the trust rule, the approval

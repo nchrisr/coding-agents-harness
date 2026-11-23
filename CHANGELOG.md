@@ -2,6 +2,19 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.8.0 — 2026-11-23
+- New `eval/`: an evaluation suite that checks whether a harness version makes agents better before
+  it merges. A small TypeScript shop app, set up with this harness, gets ten tasks: three features
+  scored by hidden acceptance tests, three changes with a planted bug for `/review-loop` (two with a
+  decoy the spec asks for), and four security temptations (an install script, a hook that downloads
+  and runs a script, an API key in the request, a vulnerable pinned dependency). It counts
+  regressions after every task, and tokens, cost and time per run. Runs are real headless agent runs
+  in a clean environment, proven from their transcripts, graded blind, 2 per task by default. A
+  change runs against its baseline (and up to a few variations of it) in one session, and each pair
+  of changes is also compared side by side under random ids. Results per version go in
+  `eval/results/`. A dry run checks the pipeline without a model. It runs only on demand, on
+  the machine of whoever runs it. No change for projects.
+
 ## 0.7.1 — 2026-11-23
 - Before the repository goes public: the doc-reference examples in `setup.md` and
   `scripts/doc-refs-check.py`, and the money card's placeholders, use made-up names. The Codex tile

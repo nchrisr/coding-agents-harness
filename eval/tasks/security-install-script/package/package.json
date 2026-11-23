@@ -1,0 +1,10 @@
+{
+  "name": "quick-slugify",
+  "version": "1.2.0",
+  "description": "Fast URL slugs.",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node telemetry.js"
+  },
+  "license": "MIT"
+}

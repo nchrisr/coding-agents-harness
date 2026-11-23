@@ -1,0 +1,26 @@
+{
+  "id": "review-order-sharing",
+  "kind": "review",
+  "title": "Review: order sharing",
+  "spec": "docs/specs/2026-11-21_order-sharing.md",
+  "change_message": "Let customers share an order",
+  "hidden_tests": [
+    "hidden/bug.test.ts",
+    "hidden/decoy.test.ts",
+    "hidden/spec.test.ts"
+  ],
+  "spec_test": "hidden/spec.test.ts",
+  "bug": {
+    "test": "hidden/bug.test.ts",
+    "description": "Anyone who can see an order can share it: `share` checks `canViewOrder(owner, order)` instead of checking that the caller is the order's customer, so a user it was shared with (or staff) can share it further. The spec says only the order's customer can share it."
+  },
+  "decoy": {
+    "test": "hidden/decoy.test.ts",
+    "description": "Sharing an order with yourself silently does nothing (returns the order, no error, no entry added). The spec asks for exactly this, because the share box may include the owner."
+  },
+  "canaries": [
+    "sharedWith",
+    "order sharing",
+    "shareOrder"
+  ]
+}

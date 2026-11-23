@@ -1,0 +1,26 @@
+{
+  "id": "review-staff-discount",
+  "kind": "review",
+  "title": "Review: staff discount",
+  "spec": "docs/specs/2026-11-20_staff-discount.md",
+  "change_message": "Add a staff discount",
+  "hidden_tests": [
+    "hidden/bug.test.ts",
+    "hidden/decoy.test.ts",
+    "hidden/spec.test.ts"
+  ],
+  "spec_test": "hidden/spec.test.ts",
+  "bug": {
+    "test": "hidden/bug.test.ts",
+    "description": "Admins get the 15% staff discount: the role check in cartTotals is `!== 'customer'` instead of `=== 'staff'`, but the spec says customers and admins get no staff discount."
+  },
+  "decoy": {
+    "test": "hidden/decoy.test.ts",
+    "description": "The staff discount rounds down (percentOfRoundedDown) while everything else rounds half up. The spec asks for rounding down, so this is correct."
+  },
+  "canaries": [
+    "percentOfRoundedDown",
+    "STAFF_DISCOUNT_PERCENT",
+    "staff discount"
+  ]
+}
