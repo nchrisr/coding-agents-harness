@@ -2,6 +2,12 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.5.1 — 2026-11-23
+- New `evaluate.md`: how to test a tool or rule before adopting it. Same setup in every arm, the
+  tool blocked in the control, proof from the transcripts that it ran, blind grading against a key
+  checked against the code, and cost and correctness reported with the sample size. `finding.md`
+  points to it. No change for projects.
+
 ## 0.5.0 — 2026-11-23
 - New `scripts/doc-refs-check.py`, run by the Stop hook and in CI. It fails when `AGENTS.md` or
   `docs/` names a file that's gone, a line past a file's end, or a function no longer where the doc

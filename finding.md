@@ -23,6 +23,8 @@ own `AGENTS.md` or card instead.
 
 **Never include an unfixed security hole.** Fix it in the project first.
 
+**A finding that proposes a tool, hook or rule** is tested first, following `evaluate.md`.
+
 ## In the harness repo
 Bring the finding to a session here: "Turn this finding into a harness change." It edits the files,
 bumps `VERSION`, adds a `CHANGELOG.md` line, and opens a pull request. The owner reviews that pull

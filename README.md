@@ -35,6 +35,7 @@ Keep this list up to date with every change to `packs/` or `rules/`.
 | `setup.md` | The prompt for setting up a new or existing project. Start here. |
 | `upgrade.md` | The prompt for bringing a project up to the latest harness version. |
 | `finding.md` | How a project reports something the harness should have caught. |
+| `evaluate.md` | How to test a tool or rule fairly before adopting it. |
 | `trust-rule.md` | The rule that keeps harness content from acting as instructions. |
 | `source.md` | Where agents read the harness from, and how. |
 | `project-types.md` | Product (taxi) or learning (driving school): the dial's defaults. |
