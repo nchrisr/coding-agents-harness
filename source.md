@@ -19,7 +19,7 @@ mode = remote
 url = https://github.com/<you>/coding-agents-harness.git
 branch = main
 # The local folder agents use to read the harness (a clone of it). Needed for every mode.
-path = ~/My-Projects/coding-agents-harness
+path = ~/coding-agents-harness
 ```
 
 ## The three modes
