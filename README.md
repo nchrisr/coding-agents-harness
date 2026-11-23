@@ -31,16 +31,39 @@ files (instructions, checks, reviewers, hooks), and you review them before anyth
 
 ## How it works
 
+One harness serves all your projects. Setup and upgrades carry it out to each project; findings
+carry lessons back in; the trust rule, locked on your machine, keeps agents treating the harness as
+material to review, not orders.
+
+```mermaid
+flowchart TB
+    T["🔒 Trust rule<br/>locked with your password"]
+    H(["Coding agents harness<br/>recipes · packs · templates"])
+    A["Project A<br/>its own AGENTS.md, cards, checks"]
+    B["Project B<br/>its own AGENTS.md, cards, checks"]
+    C["Project C<br/>its own AGENTS.md, cards, checks"]
+    T -. "every agent reads it first" .-> H
+    H -- "setup · upgrade" --> A
+    H -- "setup · upgrade" --> B
+    H -- "setup · upgrade" --> C
+    A -. "finding" .-> H
+    B -. "finding" .-> H
+    C -. "finding" .-> H
+```
+
+- **Setup** writes a project's own harness files from the recipes, adapted to that project. You
+  review them before anything is committed.
+- **Upgrade** brings a project up to the latest version, item by item, when you ask.
+- **A finding** is a lesson from one project, written without anything that identifies it. It becomes
+  a harness change you review, and every project picks it up on its next upgrade.
+
+### Inside each project
+
 ```mermaid
 flowchart LR
-    H["This harness<br/>(recipes, packs, templates)"] -->|setup| P["Your project's harness files<br/>AGENTS.md, system cards, checks, hooks"]
-    P --> C["An agent makes a change"]
-    C --> S["Stop hook: tests, type checks,<br/>doc references"]
-    S --> R["Review loop: the systems touched,<br/>blast radius, dependency scan, hooks diff"]
+    C["An agent makes a change"] --> S["Stop hook<br/>tests, type checks, doc references"]
+    S --> R["Review loop<br/>systems touched, blast radius,<br/>dependency scan, hooks diff"]
     R --> O["You review and merge"]
-    O -.->|"something slipped through"| F["Harness finding"]
-    F -.->|"pull request you review"| H
-    H -.->|upgrade| P
 ```
 
 ## Measured
