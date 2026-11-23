@@ -6,17 +6,35 @@
 ![Claude Code](https://img.shields.io/badge/Claude_Code-supported-blueviolet.svg)
 ![Codex](https://img.shields.io/badge/Codex-supported-blueviolet.svg)
 
-![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
-![Rust](https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)
-![GitLab](https://img.shields.io/badge/GitLab-FC6D26?logo=gitlab&logoColor=white)
-![Azure Repos](https://img.shields.io/badge/Azure_Repos-0078D7?logo=azuredevops&logoColor=white)
-
 A reusable way of working with coding agents. It is a recipe book, not a library: nothing here runs
 inside a project, and no project depends on it. An agent reads it, writes the project's own harness
 files (instructions, checks, reviewers, hooks), and you review them before anything is committed.
+
+## Works with
+
+**Languages:** each gets its style guide, linters, end-of-turn checks and dependency safety.
+
+<p align="center">
+  <img src="assets/tiles/typescript.svg" width="104" height="104" alt="TypeScript" />
+  <img src="assets/tiles/javascript.svg" width="104" height="104" alt="JavaScript" />
+  <img src="assets/tiles/python.svg" width="104" height="104" alt="Python" />
+  <img src="assets/tiles/rust.svg" width="104" height="104" alt="Rust" />
+</p>
+
+**Platforms:** each gets the approval lock on harness files and weekly vulnerability alerts.
+
+<p align="center">
+  <img src="assets/tiles/github.svg" width="104" height="104" alt="GitHub" />
+  <img src="assets/tiles/gitlab.svg" width="104" height="104" alt="GitLab" />
+  <img src="assets/tiles/azure-repos.svg" width="104" height="104" alt="Azure Repos" />
+</p>
+
+**Agents:** each reads the same locked trust rule.
+
+<p align="center">
+  <img src="assets/tiles/claude-code.svg" width="104" height="104" alt="Claude Code" />
+  <img src="assets/tiles/codex.svg" width="104" height="104" alt="Codex" />
+</p>
 
 ## What it gives a project
 

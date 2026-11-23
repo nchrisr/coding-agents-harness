@@ -4,7 +4,8 @@ Each upgrade reads the entries after the version a project was set up from.
 
 ## 0.6.2 — 2026-11-23
 - README: a diagram of one harness serving many projects (setup and upgrades out, findings back, the
-  locked trust rule), with the per-change loop inside each project below it. No change for projects.
+  locked trust rule), with the per-change loop inside each project below it, and a "Works with" grid
+  of logo tiles for languages, platforms and agents (`assets/tiles/`). No change for projects.
 
 ## 0.6.1 — 2026-11-23
 - README: what the harness gives a project (including security and token use), a diagram of how it
