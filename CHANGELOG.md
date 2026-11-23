@@ -2,6 +2,17 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.4.0 — 2026-11-22
+Dependency safety:
+- New starter card `dependencies` (Teach me): lock files committed and installs strict, no known high
+  or critical vulnerability merged without the owner's written acceptance, install scripts off except
+  an approved list, and a stranger check for every new package (name, age, use, maintainers, install
+  scripts, need).
+- `scripts/deps-check.sh` lists direct and locked dependency changes since the base and runs
+  OSV-Scanner; the review loop shows its output word for word.
+- Language packs say how to lock, scan and stop install-time code for npm/pnpm, Python and Rust.
+  Platform packs say how to watch weekly: Dependabot on GitHub (free), a scheduled scan elsewhere.
+
 ## 0.3.0 — 2026-11-22
 From the first review-loop dry run on a new project:
 - The fixer fixes a proven bug that breaks a teach-me card's invariant (marked `[teach-me]` for the

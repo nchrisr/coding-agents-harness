@@ -46,3 +46,12 @@ the code is on a measured hot path. The reviewer checks this; don't silence Clip
 - Holding a lock across an `.await`. Blocking calls inside async code.
 - Integer overflow: wraps in release builds. Use `checked_*` for money and counts.
 - Errors swallowed with `let _ =` or `.ok()`.
+
+## Dependencies (the `dependencies` card)
+- **Lock file:** commit `Cargo.lock` for applications and binaries; build with `--locked`.
+- **Vulnerability scan:** `scripts/deps-check.sh` (OSV-Scanner); `cargo audit` (RustSec) or
+  `cargo deny check advisories sources` as a second opinion. `cargo deny` can also refuse crates from
+  unknown registries or git sources.
+- **Build-time code:** a crate's `build.rs` and procedural macros run on your machine at build time, and
+  can't be switched off. So the stranger check matters more here: flag a new crate with a `build.rs` or
+  a proc-macro, especially one with few users.

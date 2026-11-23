@@ -47,3 +47,15 @@ The plain-loop override has no clean lint rule; the reviewer checks it (more tha
 - Floating-point money: round at the edges, never compare with `===`.
 - Dates: `new Date('2026-01-02')` is UTC midnight, which shows as the day before in the Americas.
 - Every async button: what happens on a second click while the first is running? (state and timing)
+
+## Dependencies (the `dependencies` card)
+- **Lock file:** commit `package-lock.json` (or `pnpm-lock.yaml`). Install with `npm ci` (or
+  `pnpm install --frozen-lockfile`) everywhere except when deliberately changing dependencies.
+- **Vulnerability scan:** `scripts/deps-check.sh` (OSV-Scanner). `npm audit --omit=dev` is a quick
+  second opinion.
+- **Install scripts off:** pnpm 10 and later runs no install scripts unless the package is listed in
+  `onlyBuiltDependencies`; keep that list short and owner-approved. With npm, add `ignore-scripts=true`
+  to `.npmrc`, then run each approved package's script on purpose (`npm rebuild <pkg>
+  --ignore-scripts=false`) and list those packages in the dependencies card. Some packages (native
+  image or build tools) need their script: turn this on with a full build and test run, and add only
+  what breaks.

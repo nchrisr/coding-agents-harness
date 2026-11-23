@@ -22,7 +22,8 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
      the branch and base, the spec path, the card path, its setting, and why it woke.
 
    If `harness-files` is touched, also run `scripts/hooks-diff.sh <base>` yourself and keep its output
-   unchanged for step 6; pass it to that card's system reviewer too.
+   unchanged for step 6; pass it to that card's system reviewer too. If `dependencies` is touched, do
+   the same with `scripts/deps-check.sh <base>`.
 
    Merge every numbered finding into one list, renumbered, each keeping its wording and `[card]` tag.
    Add, as findings too, any problem a system reviewer noted outside its own card, tagged

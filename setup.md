@@ -88,8 +88,12 @@ that says nothing specific to this project should be cut or rewritten.
 - **`docs/systems/`:** one card per system from `<harness>/templates/system-card.md` and
   `<harness>/templates/cards/`, plus a `README.md` listing them. "How it breaks" holds this project's
   real incidents; if there are none yet, say so rather than inventing some.
-- **`scripts/systems-touched.sh`** and **`scripts/hooks-diff.sh`** from the templates, with this
-  project's base branch as the default.
+- **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`** and **`scripts/deps-check.sh`** from
+  the templates, with this project's base branch as the default.
+- **Dependency safety** (`dependencies` card and the language packs): the lock file committed, strict
+  installs, install scripts off except an approved list (proved by a full build and test run), and a
+  weekly scan: on GitHub, Dependabot alerts and security updates (an owner step: free, but it's a
+  setting); elsewhere, a scheduled pipeline. If OSV-Scanner isn't installed, say how to install it.
 - **`.claude/agents/`:** `reviewer`, `spec-critic`, `fixer`, `system-reviewer` from the templates.
 - **`.claude/commands/`:** `spec`, `review-loop` from the templates.
 - **`.claude/hooks/check-on-stop.sh`** from the template, with the language packs' fast checks.

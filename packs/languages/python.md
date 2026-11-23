@@ -44,3 +44,11 @@ reviewer checks the rest of the override (no nested comprehensions, no clever on
 - Naive datetimes. Store and compare in UTC with `tzinfo`.
 - `subprocess` with `shell=True`, `pickle`/`yaml.load` on untrusted data, `eval`. Ruff `S` rules.
 - Async code calling blocking I/O.
+
+## Dependencies (the `dependencies` card)
+- **Lock file:** `uv.lock` (with `uv sync --locked`) or `poetry.lock`; with pip, pinned
+  `requirements.txt` with hashes, installed with `pip install --require-hashes -r requirements.txt`.
+- **Vulnerability scan:** `scripts/deps-check.sh` (OSV-Scanner); `pip-audit` is a second opinion.
+- **Install-time code:** a source-only package runs its build code on install. Prefer wheels
+  (`--only-binary=:all:` where every dependency has one), and treat a dependency with no wheel as a flag
+  in the stranger check.
