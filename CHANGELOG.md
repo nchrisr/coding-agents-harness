@@ -2,6 +2,10 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.4 — 2026-11-23
+- README quick start: clone the `main` branch (`git clone -b main`), since `develop` is now the
+  repository's default branch and holds work in progress. No change for projects.
+
 ## 0.9.3 — 2026-11-23
 - This repo now takes pull requests into `develop`; `main` holds released versions, and projects keep
   reading the harness from `main`. `README.md`, `CONTRIBUTING.md` and `eval/README.md` say so, and the

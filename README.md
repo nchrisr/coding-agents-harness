@@ -126,8 +126,9 @@ reviews and merges.
 
 ## Quick start
 
-1. **Clone this repo** anywhere on your machine:
-   `git clone <this repo's URL> ~/coding-agents-harness`
+1. **Clone this repo's `main` branch** anywhere on your machine:
+   `git clone -b main <this repo's URL> ~/coding-agents-harness`
+   `main` holds released versions; `develop` is work in progress.
 2. **Open your project** (new or existing) in your coding agent.
 3. **Say:** "Set up this project with the harness at `~/coding-agents-harness/setup.md`."
    For a new project, describe the idea in a few sentences first.
