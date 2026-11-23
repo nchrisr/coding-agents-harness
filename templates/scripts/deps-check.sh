@@ -102,9 +102,29 @@ if ! command -v osv-scanner >/dev/null 2>&1; then
   echo "  others: https://google.github.io/osv-scanner/installation/) and run this again."
   exit 0
 fi
-if osv-scanner scan --help >/dev/null 2>&1; then
-  osv-scanner scan source --recursive . 2>&1 | tail -80
-else
-  osv-scanner --recursive . 2>&1 | tail -80
+# Scan each lock file by name. Walking the folder (--recursive .) skips whatever .gitignore ignores,
+# so inside an agent's worktree under an ignored folder (.claude/worktrees/...) it scans nothing.
+lockfiles=()
+while IFS= read -r lockfile; do
+  lockfiles+=("-L" "$lockfile")
+done < <(tracked_and_new '(^|/)(package-lock\.json|npm-shrinkwrap\.json|pnpm-lock\.yaml|yarn\.lock|bun\.lock|Cargo\.lock|uv\.lock|poetry\.lock|Pipfile\.lock|pdm\.lock|requirements[^/]*\.txt|go\.mod|Gemfile\.lock|composer\.lock|pubspec\.lock|mix\.lock|gradle\.lockfile|pom\.xml|packages\.lock\.json)$')
+if [ "${#lockfiles[@]}" = 0 ]; then
+  echo "  nothing to scan: no lock file in this project."
+  exit 0
 fi
+printf '  scanning:'; printf ' %s' "${lockfiles[@]}" | sed 's/ -L//g'; echo
+if osv-scanner scan --help >/dev/null 2>&1; then
+  output=$(osv-scanner scan source "${lockfiles[@]}" 2>&1)
+else
+  output=$(osv-scanner "${lockfiles[@]}" 2>&1)
+fi
+status=$?
+# Exit codes: 0 no vulnerabilities, 1 some found, 127 an error, 128 no packages found.
+if [ "$status" -gt 1 ] || printf '%s\n' "$output" | grep -qi 'no package sources found'; then
+  echo "  NOT RUN: the project has lock files, but OSV-Scanner did not scan them (exit $status)."
+  echo "  This is not a clean result. Its output:"
+  printf '%s\n' "$output" | tail -20 | sed 's/^/    /'
+  exit 0
+fi
+printf '%s\n' "$output" | tail -80
 exit 0

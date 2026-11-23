@@ -2,6 +2,15 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.5 — 2026-11-23
+- `scripts/deps-check.sh` scans each lock file by name (`osv-scanner scan source -L <file>`) instead of
+  walking the folder. OSV-Scanner skips whatever `.gitignore` ignores, so inside an agent's worktree
+  under an ignored folder (such as `.claude/worktrees/<name>`) it scanned nothing and the output looked
+  clean. It now prints **NOT RUN** when the project has lock files but the scanner scanned nothing or
+  failed, and says which lock files it scanned. **Recopy `scripts/deps-check.sh`.**
+- The evaluation's dry run checks this: it runs `deps-check.sh` from such a worktree and expects a
+  planted vulnerable dependency to show up. Skipped when `osv-scanner` isn't installed or is offline.
+
 ## 0.9.4 — 2026-11-23
 - README quick start: clone the `main` branch (`git clone -b main`), since `develop` is now the
   repository's default branch and holds work in progress. No change for projects.
