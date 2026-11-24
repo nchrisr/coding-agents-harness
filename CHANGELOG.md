@@ -2,6 +2,33 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.7 — 2026-11-24
+- The review loop works only on what the session wrote. A new step 0 has the agent list untracked
+  files it didn't create (the owner's scraps or notes), name them in one line, and keep them out of
+  every `git add`, script and reviewer brief. Steps 3 and 7 stage with path excludes, never a bare
+  `git add -A`. The reviewer, system reviewer and fixer are told which paths are set aside.
+- `scripts/systems-touched.sh`, `hooks-diff.sh` and `deps-check.sh` take `--exclude <path>`
+  (repeatable, from the repo root), so an unrelated folder no longer wakes a card or shows in the
+  hooks or dependency output. `systems-touched.sh` lists the untracked files it counted on stderr.
+  `hooks-diff.sh` and `deps-check.sh` also read a path with a space as one path, where before they split it in two.
+- `check-on-stop.sh` has a `local_only` list: git-ignored folders where the owner keeps code CI never
+  sees. A check that fails only on files in those folders no longer stops the turn: the owner gets a
+  note and the other checks still run. Any other path in the output, including `node_modules` or
+  build output, still stops it. The list starts empty, so nothing changes until it's filled in. Fast
+  checks now call `failed <name> "$output"`. Setup asks about such folders, lists them, and leaves
+  them out of the typecheck, lint and format configs.
+- The review scripts (`systems-touched.sh`, `blast-radius.sh`, `hooks-diff.sh`, `deps-check.sh`)
+  no longer assume `origin/main`. With no base given, each compares with where this branch left
+  origin's default branch (`git merge-base`), so a project working on `develop` gets the right diff,
+  and changes that landed on that branch after the branch was cut no longer show as this change's.
+  It prints the base it chose, and stops if origin's default isn't known. The review loop says what
+  `<base>` is. An explicit base still wins. Upgrade runs `git remote set-head origin --auto`.
+  **Projects that edited the default base in their copies can drop that edit.**
+- **Recopy the four review scripts, `check-on-stop.sh`, `.claude/commands/review-loop.md` and the
+  three review agents**, and their `.gemini/` copies where they exist, keeping the project's own fast
+  checks, rewritten as `failed` lines. If the owner keeps local-only code in ignored folders, list
+  them in `local_only` and leave them out of the checker configs.
+
 ## 0.9.6 — 2026-11-24
 - README: a "What a project gets" section showing cut-down files from the practice app in
   `eval/harness/`, and the real clone URL in the quick start. No change for projects.

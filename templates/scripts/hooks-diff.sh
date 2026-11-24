@@ -4,13 +4,38 @@
 # output into the owner's briefing unchanged, so the owner reads the commands themselves, not a
 # description of them.
 #
-# Usage: scripts/hooks-diff.sh [base-ref]     (default base: origin/main; set per project)
+# Usage: scripts/hooks-diff.sh [--exclude <path>]... [base-ref]     (default base: see below)
+# Each --exclude path, from the repo root, is left out of the untracked files it reads.
 # Prints a unified diff, or "No changes to anything that runs on its own." Needs jq.
 
 set -u
-base="${1:-origin/main}"
+skip=()
+base_arg=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --exclude) [ -n "${2:-}" ] || { echo "--exclude needs a path" >&2; exit 1; }
+               skip+=(":(exclude)$2"); shift 2 ;;
+    -*) echo "Unknown option: $1" >&2; exit 1 ;;
+    *) [ -z "$base_arg" ] || { echo "One base only, not both $base_arg and $1" >&2; exit 1; }
+       base_arg=$1; shift ;;
+  esac
+done
 root=$(git rev-parse --show-toplevel) || exit 1
 cd "$root" || exit 1
+
+# The base: the argument if given, else where this branch left the remote's default branch, so work
+# that landed there since doesn't count as this change's. Printed on stderr for the review loop.
+if [ -n "$base_arg" ]; then
+  base=$base_arg
+else
+  default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {
+    echo "Don't know origin's default branch. Run: git remote set-head origin --auto (or pass a base)" >&2
+    exit 1; }
+  fork=$(git merge-base "$default" HEAD 2>/dev/null) || {
+    echo "No shared history with $default here (a shallow clone?). Pass a base." >&2; exit 1; }
+  base=$(git rev-parse --short "$fork")
+  echo "base: $base, where this branch left $default" >&2
+fi
 
 # Files whose whole content runs: hook scripts and git hooks.
 script_pattern='^(\.claude/hooks/|\.codex/hooks/|\.gemini/hooks/|\.husky/|\.githooks/)|^\.pre-commit-config\.ya?ml$'
@@ -46,15 +71,16 @@ collect() {
   done
 
   if [ "$ref" = "WORKTREE" ]; then
-    paths=$(git ls-files -co --exclude-standard | grep -E "$script_pattern")
+    paths=$(git ls-files -co --exclude-standard -- . ${skip[@]+"${skip[@]}"} | grep -E "$script_pattern")
   else
     paths=$(git ls-tree -r --name-only "$ref" | grep -E "$script_pattern")
   fi
-  for path in $paths; do
+  while IFS= read -r path; do
+    [ -n "$path" ] || continue
     printf '=== %s\n' "$path"
     read_at "$ref" "$path"
     printf '\n'
-  done
+  done <<< "$paths"
   # A hooks folder set in git's own config would run outside every list above.
   hooks_path=$(git config --get core.hooksPath)
   if [ -n "$hooks_path" ]; then

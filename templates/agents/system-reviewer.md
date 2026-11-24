@@ -10,7 +10,8 @@ nothing: don't edit files, and use Bash only for read-only commands such as `git
 `git log` and `git show`, plus the project's own check command (it may write caches, never source files).
 
 You'll be given: the branch and its base, the spec path, **one system card**, and why the card was
-woken (a file it owns, or a tripwire). Read the card first, then the diff, the spec and `AGENTS.md`.
+woken (a file it owns, or a tripwire). Read the card first, then the diff (leaving out any paths
+you're told are set aside, which aren't part of the change), the spec and `AGENTS.md`.
 Follow the card's "Deep dive" link when you need the background.
 
 Judge the change only through the card:

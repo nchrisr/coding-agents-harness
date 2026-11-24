@@ -6,13 +6,38 @@
 # The reviewer pastes the output into the owner's briefing unchanged, then runs the stranger check
 # (docs/systems/dependencies.md) on each newly added package.
 #
-# Usage: scripts/deps-check.sh [base-ref]     (default base: origin/main; set per project)
+# Usage: scripts/deps-check.sh [--exclude <path>]... [base-ref]     (default base: see below)
+# Each --exclude path, from the repo root, is left out of the untracked files it reads.
 # Needs jq for npm projects. Reaches the network only for the vulnerability scan.
 
 set -u
-base="${1:-origin/main}"
+skip=()
+base_arg=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --exclude) [ -n "${2:-}" ] || { echo "--exclude needs a path" >&2; exit 1; }
+               skip+=(":(exclude)$2"); shift 2 ;;
+    -*) echo "Unknown option: $1" >&2; exit 1 ;;
+    *) [ -z "$base_arg" ] || { echo "One base only, not both $base_arg and $1" >&2; exit 1; }
+       base_arg=$1; shift ;;
+  esac
+done
 root=$(git rev-parse --show-toplevel) || exit 1
 cd "$root" || exit 1
+
+# The base: the argument if given, else where this branch left the remote's default branch, so work
+# that landed there since doesn't count as this change's. Printed on stderr for the review loop.
+if [ -n "$base_arg" ]; then
+  base=$base_arg
+else
+  default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {
+    echo "Don't know origin's default branch. Run: git remote set-head origin --auto (or pass a base)" >&2
+    exit 1; }
+  fork=$(git merge-base "$default" HEAD 2>/dev/null) || {
+    echo "No shared history with $default here (a shallow clone?). Pass a base." >&2; exit 1; }
+  base=$(git rev-parse --short "$fork")
+  echo "base: $base, where this branch left $default" >&2
+fi
 
 # Prints a file at the base ref, or in the working tree when ref is "WORKTREE".
 read_at() {
@@ -24,7 +49,7 @@ read_at() {
 }
 
 tracked_and_new() {
-  git ls-files -co --exclude-standard | grep -E "$1" | grep -v '/node_modules/'
+  git ls-files -co --exclude-standard -- . ${skip[@]+"${skip[@]}"} | grep -E "$1" | grep -v '/node_modules/'
 }
 
 # "name version" for each direct dependency in a manifest.
@@ -71,20 +96,23 @@ compare() {
 
 echo "== Direct dependencies (since $base)"
 found=0
-for manifest in $(tracked_and_new '(^|/)(package\.json|Cargo\.toml|pyproject\.toml|requirements[^/]*\.txt)$'); do
+# Read line by line, so a path with a space stays one path.
+while IFS= read -r manifest; do
+  [ -n "$manifest" ] || continue
   changes=$(compare "$(direct_deps "$base" "$manifest")" "$(direct_deps WORKTREE "$manifest")")
   if [ -n "$changes" ]; then
     found=1
     echo "$manifest"
     echo "$changes"
   fi
-done
+done < <(tracked_and_new '(^|/)(package\.json|Cargo\.toml|pyproject\.toml|requirements[^/]*\.txt)$')
 [ "$found" = 1 ] || echo "  no changes"
 
 echo
 echo "== Locked packages, full tree (since $base)"
 found=0
-for lockfile in $(tracked_and_new '(^|/)(package-lock\.json|pnpm-lock\.yaml|Cargo\.lock|uv\.lock|poetry\.lock)$'); do
+while IFS= read -r lockfile; do
+  [ -n "$lockfile" ] || continue
   changes=$(compare "$(locked_packages "$base" "$lockfile")" "$(locked_packages WORKTREE "$lockfile")")
   if [ -n "$changes" ]; then
     found=1
@@ -92,7 +120,7 @@ for lockfile in $(tracked_and_new '(^|/)(package-lock\.json|pnpm-lock\.yaml|Carg
     echo "$lockfile ($count added or changed)"
     echo "$changes" | head -60
   fi
-done
+done < <(tracked_and_new '(^|/)(package-lock\.json|pnpm-lock\.yaml|Cargo\.lock|uv\.lock|poetry\.lock)$')
 [ "$found" = 1 ] || echo "  no changes"
 
 echo
