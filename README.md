@@ -86,6 +86,45 @@ flowchart LR
     R --> O["You review and merge"]
 ```
 
+## What a project gets
+
+The practice app in `eval/` is a small shop library set up with this harness. Its files are in
+`eval/harness/`; here are two of them, cut short.
+
+**`AGENTS.md`**, the always-loaded instructions, picks a tier for each change and lists the
+project's systems:
+
+```markdown
+| Tier | What | Process |
+|---|---|---|
+| 1 | Docs, comments, tests only, a rename | Make it; checks pass |
+| 2 | A feature or fix inside one system | Spec (`/spec`), build, `/review-loop` |
+| 3 | Money, refunds, access, dependencies, anything on a teach-me card | Spec with `spec-critic`, owner approves, build, `/review-loop` |
+
+- `docs/systems/money-and-numbers.md` — teach-me
+- `docs/systems/sign-in-and-access.md` — teach-me
+- `docs/systems/state-and-timing.md` — keep-me-posted
+```
+
+**A system card**, `docs/systems/money-and-numbers.md`, says what must always be true, which files
+wake its reviewer, and how involved the owner is:
+
+```markdown
+**Involvement:** Teach me. A wrong total is charged to a real card.
+**The question:** is this amount right to the cent, for every input, and does it follow the spec?
+
+## Invariants (always true)
+- Every amount is whole cents. Rounding happens only in `src/money.ts` helpers.
+- A total is never negative, and a discount never takes more than the subtotal.
+
+## Tripwires (changes that pull you in, even from a trusted area)
+- New rounding outside `src/money.ts`, or a float conversion of an amount.
+```
+
+A change to `src/cart.ts` wakes this card's reviewer; a change to the README wakes none. The review
+loop (`templates/commands/review-loop.md`) merges the reviewers' findings, has a separate agent fix
+them, rechecks once, and briefs you card by card at the involvement you chose.
+
 ## Measured
 
 Tools earn a place by testing, following `evaluate.md`. The code index was tested on a ~480-file
@@ -127,7 +166,7 @@ reviews and merges.
 ## Quick start
 
 1. **Clone this repo's `main` branch** anywhere on your machine:
-   `git clone -b main <this repo's URL> ~/coding-agents-harness`
+   `git clone -b main https://github.com/nchrisr/coding-agents-harness.git ~/coding-agents-harness`
    `main` holds released versions; `develop` is work in progress.
 2. **Open your project** (new or existing) in your coding agent.
 3. **Say:** "Set up this project with the harness at `~/coding-agents-harness/setup.md`."
