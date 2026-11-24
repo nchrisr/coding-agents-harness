@@ -2,6 +2,12 @@
 
 Each upgrade reads the entries after the version a project was set up from.
 
+## 0.9.6 — 2026-11-24
+- README: a "What a project gets" section showing cut-down files from the practice app in
+  `eval/harness/`, and the real clone URL in the quick start. No change for projects.
+- Issues open on the finding form or a private security report; blank issues are off. Pull requests
+  get a template with the checklist from `CONTRIBUTING.md`. No change for projects.
+
 ## 0.9.5 — 2026-11-23
 - `scripts/deps-check.sh` scans each lock file by name (`osv-scanner scan source -L <file>`) instead of
   walking the folder. OSV-Scanner skips whatever `.gitignore` ignores, so inside an agent's worktree
