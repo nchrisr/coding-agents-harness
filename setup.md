@@ -28,7 +28,9 @@ Find out:
 - What it does, its stack, its languages, and who uses it
 - Its commands for typecheck, tests, lint, format and build, and what CI runs
 - Where it's hosted (GitHub, GitLab, Azure Repos, none), its branches, and how changes reach the main
-  branch; its deploy path and database migration process
+  branch (run `git remote set-head origin --auto`: the review scripts compare with the remote's
+  default branch, and a clone keeps the one it started with even after the host's changes); its
+  deploy path and database migration process
 - Any existing agent instructions (AGENTS.md, CLAUDE.md, GEMINI.md, `.claude/`, `.gemini/`) and
   `.harness-version`. Build on them; never overwrite a rule that is stricter than the harness's
 - Which coding agents the owner uses here: Claude Code, Codex, Gemini CLI. The pointers found in the
@@ -103,7 +105,8 @@ that says nothing specific to this project should be cut or rewritten.
   `<harness>/templates/cards/`, plus a `README.md` listing them. "How it breaks" holds this project's
   real incidents; if there are none yet, say so rather than inventing some.
 - **`scripts/systems-touched.sh`**, **`scripts/hooks-diff.sh`**, **`scripts/deps-check.sh`** and
-  **`scripts/blast-radius.sh`** from the templates, with this project's base branch as the default.
+  **`scripts/blast-radius.sh`** from the templates, unchanged: with no base given, they compare with
+  where the branch left origin's default branch.
 - **`scripts/doc-refs-check.py`** from the template, run by the Stop hook and in CI. It fails when
   `AGENTS.md` or `docs/` names a file that's gone, a line past a file's end, or a function no longer
   where the doc says, and when a card's `owns` path no longer exists. Write references it can follow:
@@ -116,6 +119,11 @@ that says nothing specific to this project should be cut or rewritten.
 - **`.claude/agents/`:** `reviewer`, `spec-critic`, `fixer`, `system-reviewer` from the templates.
 - **`.claude/commands/`:** `spec`, `review-loop` from the templates.
 - **`.claude/hooks/check-on-stop.sh`** from the template, with the language packs' fast checks.
+  Those checks must cover the files CI covers, no more. Typecheck, lint and format tools read the whole
+  folder, git-ignored files included, so a private note or scratch copy inside the repo can fail a
+  check CI would pass. Ask the owner about ignored folders that hold local-only code, leave them out
+  of those tools' configs, and list them in the hook's `local_only`. A failure that names only files
+  in those folders is reported to the owner without stopping the turn.
 - **`.claude/settings.json`**, merged with any existing settings: an allowlist of read-only git
   commands and this project's check commands only; the Stop hook with a timeout longer than the checks
   and a status message; a PostToolUse formatter hook on `Edit|Write|MultiEdit` that never fails the edit.

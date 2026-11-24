@@ -16,13 +16,13 @@
      "replace": [["# ADAPT: skip if dependencies aren't installed, as in a new worktree.", "[ -d node_modules ] || exit 0"],
                  ["npm test 2>&1", "npm run check 2>&1"]]},
     {"template": "templates/scripts/systems-touched.sh", "dest": "scripts/systems-touched.sh", "mode": "755",
-     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+     "replace": [["default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {", "default=main || {"]]},
     {"template": "templates/scripts/blast-radius.sh", "dest": "scripts/blast-radius.sh", "mode": "755",
-     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+     "replace": [["default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {", "default=main || {"]]},
     {"template": "templates/scripts/hooks-diff.sh", "dest": "scripts/hooks-diff.sh", "mode": "755",
-     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+     "replace": [["default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {", "default=main || {"]]},
     {"template": "templates/scripts/deps-check.sh", "dest": "scripts/deps-check.sh", "mode": "755",
-     "replace": [["base=\"${1:-origin/main}\"", "base=\"${1:-main}\""]]},
+     "replace": [["default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {", "default=main || {"]]},
     {"template": "templates/scripts/doc-refs-check.py", "dest": "scripts/doc-refs-check.py", "mode": "755", "replace": []}
   ]
 }

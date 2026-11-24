@@ -3,7 +3,7 @@
 # one, as file:line. Breakage usually lives outside the diff, so reviewers get this list with it.
 # Names only, no source: a reviewer reads the lines it needs.
 #
-# Usage: scripts/blast-radius.sh [base-ref]     (default base: origin/main; set per project)
+# Usage: scripts/blast-radius.sh [base-ref]     (default base: see below)
 # Covers committed and uncommitted changes since the base. A name counts as touched when its
 # top-level definition changed (an unindented or exported line), or when a changed line sits inside
 # it (from git's hunk headers). Nested helpers and class methods are left out.
@@ -12,10 +12,23 @@
 # its compiler's find-references for exact results.
 
 set -u
-base="${1:-origin/main}"
 limit="${BLAST_LIMIT:-15}"
 root=$(git rev-parse --show-toplevel) || exit 1
 cd "$root" || exit 1
+
+# The base: the argument if given, else where this branch left the remote's default branch, so work
+# that landed there since doesn't count as this change's. Printed on stderr for the review loop.
+if [ -n "${1:-}" ]; then
+  base=$1
+else
+  default=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || {
+    echo "Don't know origin's default branch. Run: git remote set-head origin --auto (or pass a base)" >&2
+    exit 1; }
+  fork=$(git merge-base "$default" HEAD 2>/dev/null) || {
+    echo "No shared history with $default here (a shallow clone?). Pass a base." >&2; exit 1; }
+  base=$(git rev-parse --short "$fork")
+  echo "base: $base, where this branch left $default" >&2
+fi
 
 # A definition: keyword then name, or `name = (` / `name = async (` for arrow functions.
 def_re='(function|class|def|fn|func|interface|type|enum|struct|trait)[[:space:]]+\*?[[:space:]]*[A-Za-z_$][A-Za-z0-9_$]*|(const|let|var)[[:space:]]+[A-Za-z_$][A-Za-z0-9_$]*[[:space:]]*='

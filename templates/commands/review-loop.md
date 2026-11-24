@@ -12,22 +12,34 @@ before the demo, the commit of the fix-ups and the PR.
 **The point is that the author doesn't judge their own work.** Pass each agent only what's listed below.
 Don't explain what you built or why, don't filter the findings, and don't add your view of them.
 
-1. **Find the systems.** Run `scripts/systems-touched.sh <base>`. Each line is a card, its setting for
-   this change, and why it woke. Cards set to `trust` need no reviewer. Then run
-   `scripts/blast-radius.sh <base>`: the functions the change touched and every other file that uses
-   them. Keep its output unchanged.
+0. **Set aside what isn't yours.** The change is what this session wrote, not everything that differs
+   from the base. List the untracked files (`git ls-files --others --exclude-standard`) and pick out
+   any this session didn't create, such as the owner's scraps or notes. Those are the **set-aside
+   paths**: kept out of every `git add`, every script below and every brief. Say so in one line,
+   naming them. If you can't tell whether a file is yours, ask before going on.
+
+1. **Find the systems.** First the base: where this branch left the branch it will merge into. Run
+   the scripts below without one the first time: each prints on stderr the base it chose, from the
+   remote's default branch. If this change merges into a different branch (a release into `main`,
+   say), use `git merge-base origin/<that branch> HEAD` instead. That commit is `<base>` from here on.
+   Run `scripts/systems-touched.sh --exclude <path> … <base>`, one `--exclude` per set-aside path,
+   from the repo root.
+   It lists on stderr the untracked files it counted: if one isn't yours, set it aside and run it
+   again. Each stdout line is a card, its setting for this change, and why it woke.
+   Cards set to `trust` need no reviewer. Then run `scripts/blast-radius.sh <base>`: the functions the
+   change touched and every other file that uses them. Keep its output unchanged.
 
 2. **Review, in parallel.** Start, in one message:
    - the `reviewer` subagent with only: the branch, that the change is everything since `<base>`
-     committed or not, the spec path, the blast-radius output, and that findings come back in its
-     numbered format;
+     committed or not, apart from the set-aside paths (named), the spec path, the blast-radius output,
+     and that findings come back in its numbered format;
    - one `system-reviewer` subagent per touched card set to `teach-me` or `keep-me-posted`, with only:
-     the branch and base, the spec path, the card path, its setting, why it woke, and the
-     blast-radius output.
+     the branch and base, the set-aside paths, the spec path, the card path, its setting, why it woke,
+     and the blast-radius output.
 
-   If `harness-files` is touched, also run `scripts/hooks-diff.sh <base>` yourself and keep its output
+   If `harness-files` is touched, also run `scripts/hooks-diff.sh --exclude <path> … <base>` yourself and keep its output
    unchanged for step 6; pass it to that card's system reviewer too. If `dependencies` is touched, do
-   the same with `scripts/deps-check.sh <base>`.
+   the same with `scripts/deps-check.sh`, with the same excludes.
 
    Merge every numbered finding into one list, renumbered, each keeping its wording and `[card]` tag.
    Add, as findings too, any problem a system reviewer noted outside its own card, tagged
@@ -35,14 +47,15 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
    place, keep one, with every reviewer's tag, and note how many reviewers raised it; count it once.
    Keep the system reviewers' briefings aside for step 6. If there are no findings, skip to step 6.
 
-3. **Fix.** First stage the author's work with `git add -A`, so that whatever changes after this point
-   is the fixer's. Then start the `fixer` subagent with only the branch, the spec path and the merged
-   findings, word for word.
+3. **Fix.** First stage the author's work, so that whatever changes after this point is the fixer's:
+   `git add -A -- . ':(exclude)<path>' …`, one exclude per set-aside path; never a bare `git add -A`.
+   Check `git status` shows none of them staged. Then start the `fixer` subagent with only the branch,
+   the set-aside paths, the spec path and the merged findings, word for word.
 
 4. **Recheck, once.** If the fixer changed any file, start a new `reviewer` in recheck mode with the
    branch, the spec path and the fixer's changes: plain `git diff` of the files it listed, plus the full
-   contents of any file still untracked. Anything this raises goes to the owner as flagged. Never run a
-   third round.
+   contents of any file still untracked that isn't set aside. Anything this raises goes to the owner as
+   flagged. Never run a third round.
 
 5. **Confirm.** Run the same checks as CI yourself, and the UI tests if the change shows on screen. If
    any fail, say so with the output. Don't change the fixer's work to make them pass; flag it instead.
@@ -58,8 +71,9 @@ Don't explain what you built or why, don't filter the findings, and don't add yo
    Report any security hole the change doesn't fix in chat only.
 
 7. **Commit,** after the demo if there is one, in two commits: first what's staged (`git commit`,
-   without `-a`), the change itself; then `git add -A` and commit the fixer's changes and owner-decided
-   edits as "Address review findings".
+   without `-a`), the change itself; then stage again with the same excludes as step 3 and commit the
+   fixer's changes and owner-decided edits as "Address review findings". Before each commit, check
+   that no set-aside path is staged.
 
 8. **Summarise on the PR** once it's open, as one comment written to a scratch file first:
 

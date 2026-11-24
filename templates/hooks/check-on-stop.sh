@@ -16,6 +16,34 @@ cd "${CLAUDE_PROJECT_DIR:-$GEMINI_PROJECT_DIR}" || exit 0
 
 # ADAPT: skip if dependencies aren't installed, as in a new worktree.
 
+# ADAPT: folders that hold the owner's local-only code: git-ignored, never committed, never seen by
+# CI (asked at setup), such as (notes scratch). Empty means every failure stops the turn.
+local_only=()
+
+# A failed check stops the turn, unless every path its output names is a git-ignored file inside one
+# of those folders. That is reported to the owner instead, and the other checks still run. Any other
+# path (tracked code, node_modules, build output, one it can't find) stops the turn.
+notes=""
+failed() {
+  local paths f d n=0 all_local=1 shown=""
+  paths=$(printf '%s\n' "$2" | grep -oE '[A-Za-z0-9_.@-]*/[A-Za-z0-9_./@-]+\.[A-Za-z0-9]+' | sort -u)
+  while IFS= read -r f; do
+    [ -n "$f" ] || continue
+    n=$((n + 1)); f="${f#"$PWD"/}"; shown="$shown$f "
+    inside=0
+    for d in ${local_only[@]+"${local_only[@]}"}; do
+      case "$f" in "${d%/}"/*) inside=1 ;; esac
+    done
+    if [ "$inside" = 0 ] || [ ! -f "$f" ] || ! git check-ignore -q "$f"; then all_local=0; fi
+  done <<< "$paths"
+  if [ "$n" -gt 0 ] && [ "$all_local" = 1 ]; then
+    notes="${notes}$1 failed only in local-only files, which CI never sees: ${shown% }. Fix them, or leave those folders out of the project's checker configs. "
+    return
+  fi
+  printf '%s failed. Fix this before finishing:\n%s\n' "$1" "$2" | tail -60 >&2
+  exit 2
+}
+
 changed=$(
   git diff --name-only HEAD 2>/dev/null
   git ls-files --others --exclude-standard 2>/dev/null
@@ -45,10 +73,11 @@ if ! printf '%s\n' "$changed" | grep -qE '\.(ts|tsx|json)$'; then
   exit 0
 fi
 
-# ADAPT: the language pack's fast checks, one block each.
-if ! output=$(npm test 2>&1); then
-  printf 'Tests failed. Fix this before finishing:\n%s\n' "$output" | tail -60 >&2
-  exit 2
-fi
+# ADAPT: the language pack's fast checks, one line each.
+output=$(npm test 2>&1) || failed Tests "$output"
 
+# Shown to the owner, without stopping the turn. Both agents read this field from stdout.
+if [ -n "$notes" ]; then
+  jq -n --arg m "$notes" '{systemMessage: $m}' 2>/dev/null || printf '%s\n' "$notes" >&2
+fi
 exit 0

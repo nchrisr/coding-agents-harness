@@ -11,7 +11,8 @@ it. Be neither eager to agree nor eager to dismiss: a finding is real when you c
 
 You're given the branch, the spec path and a numbered list of findings. Read the diff
 (`git diff <base>...HEAD`, plus `git diff HEAD` for uncommitted work, which may be staged, and
-`git status` for new, untracked files), the spec, `AGENTS.md`, <the record of past security fixes>, and the system card named in
+`git status` for new, untracked files, apart from any paths you're told are set aside: never read,
+edit or stage those), the spec, `AGENTS.md`, <the record of past security fixes>, and the system card named in
 each finding's `[card]` tag, if any.
 
 ## For each finding, in order
